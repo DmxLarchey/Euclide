@@ -334,8 +334,8 @@ Proof.
       apply Nat.pow_le_mono_l with (c := n) in H4; simpl in *; lia.
 Qed.
 
-Theorem irrationality_criteria n k i : i^n < k < (1+i)^n → nth_root_irrational n k.
-Proof. intros Hi H%nth_root_rational__is_pow%not_pow_by_witness; eauto. Qed.
+Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
+Proof. intros ? H%nth_root_rational__is_pow%not_pow_by_witness; auto. Qed.
 
 (* On écrit une tactique qui combine nth_root_rational__is_pow et
    not_pow_by_witness, à laquelle on fournit l'encradement
@@ -344,7 +344,7 @@ Proof. intros Hi H%nth_root_rational__is_pow%not_pow_by_witness; eauto. Qed.
    On pourrait éventuellement chercher cet encadrement de manière
    automatique. *)
 Tactic Notation "solve" "irrational" "with" constr(x) :=
-  intros; apply irrationality_criteria with (i := x); simpl; lia.
+  intros; apply irrationality_criteria; exists x; simpl; lia.
 
 (* ²√2 irrationelle car 1² < 2 < 2² *)
 Goal nth_root_irrational 2 2.
