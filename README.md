@@ -1,2 +1,1 @@
-# Euclide
-Euclide et l'irrationalité de ⁿ√k pour k différent de rⁿ
+# Euclide et l'irrationalité de ⁿ√k pour k différent de rⁿ
