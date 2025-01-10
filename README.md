@@ -14,6 +14,7 @@
 ```coq
 Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ q^n*k = p^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
+```
 
 ```coq
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
