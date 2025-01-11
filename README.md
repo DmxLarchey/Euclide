@@ -24,7 +24,7 @@ cas marginal n'est de toutes façons pas intéressant dans notre étude.
 Nous démontrons dans un premier temps l'irrationalité de √2
 en utilisant le lemme d'Euclide qui dit que si un nombre
 premier p divise x.y alors il divise x ou il divise y. Ce
-qui donne en Coq:
+qui donne [en Coq](theories/nth_root.v#L35):
 
 ```coq
 Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
@@ -32,7 +32,8 @@ Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
 
 Voir plus loin pour quelques détails sur la preuve
 du lemme d'Euclide. Pour l'étude de √2 spécifiquement, 
-on n'utilise que le cas particulier suivant (2 est premier):
+on n'utilise que le cas particulier suivant (où p=2),
+[en Coq](theories/nth_root.v#L145)
 
 ```coq
 Lemma two_divides_square n : 2∣n*n → 2∣n.
@@ -53,25 +54,33 @@ q. Donc 2 divise à la fois p et q. Ils ne sont donc pas
 premiers entre eux, ce qui contredit l'hypothèse de départ
 et conduit à une absurdité.
 
-En Coq celà donne le théorème suivant:
+[En Coq](theories/nth_root.v#L154) cela donne le théorème suivant:
 
 ```coq
 Theorem root_2_not_rational p q : p ⊥ q → 2*q*q = p*p → False.
 ```
 
+A noter que l'hypothèse p ⊥ q n'est pas strictement nécessaire
+bien qu'elle soit essentielle au raisonnement ci-dessus. Pour
+s'en défaire, il faut rajouter une induction, sous une forme
+ou une autre, soit en montrant que toute fraction p/q à une 
+représentation où p ⊥ q (calcul du PGCD pex), ou encore,
+en raisonnant par induction bien fondée sur p avec pex l'ordre
+de divisibilité stricte (voir ci-dessous).
+
 ## Identité de Bezout et lemme de Gauss
 
 La preuve du lemme d'Euclide peut se déduire de sa généralisation,
-le lemme de Gauss: si d et x sont premiers entre eux,  
-et d divise x.y alors d divise y. En Coq:
+le lemme de Gauss: si d et x sont premiers entre eux, et d divise x.y 
+alors d divise y. [En Coq](theories/gauss.v#L108):
 
 ```coq
 Lemma Gauss d x y : d ⊥ x → d∣x*y → d∣y.
 ```
 
 Le lemme de Gauss est lui-même conséquence de l'identité de Bezout
-que l'on peut exprimer ainsi en Coq, en n'utilisant que des
-entiers de `nat`:
+que l'on peut exprimer ainsi [en Coq](theories/gauss.v#L94)), 
+en n'utilisant que des entiers de `nat`:
 
 ```coq
 Theorem Bezout : a ⊥ b ↔ ∃ u v u' v', u*a + v*b = 1 + u'*a + v'*b.

@@ -9,7 +9,7 @@
 
 Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides bounded_choice euclid.
+Require Import arith_ext divides bounded_choice gauss.
 
 (** Notion de nombre entier premier *)
 

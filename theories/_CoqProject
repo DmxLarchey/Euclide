@@ -5,6 +5,6 @@ measure.v
 divides.v
 gcd_rect.v
 bounded_choice.v
-euclid.v
+gauss.v
 nth_root.v
 
