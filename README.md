@@ -21,8 +21,25 @@ cas marginal n'est de toutes façons pas intéressant dans notre étude.
 
 ## Irrationalité de √2
 
-Nous démontrons dans un premier temps l'irrationalité de √2
-en utilisant le [lemme d'Euclide](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide) 
+La notion de divisibilité _d divise n_, notée d∣n, et l'ordre qu'elle
+induit sur les entiers, est l'outil fondamental dans les explications 
+qui suivent et est définie comme ceci [en Coq](theories/divides.v#L28):
+
+```coq
+Definition div d n := ∃q, q*d = n.
+Infix "∣" := div.
+```
+
+Les notions de nombres premiers en eux, et de nombres premiers,
+en découlent:
+- on rappelle que _p et q sont premiers entre eux_, noté
+noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
+à p et q (rappel: 1 divise tous les entiers);
+- _p est premier_, noté `prime p` ci-dessous, si p≠1 et
+n'a que deux diviseurs, 1 et p lui-même.
+
+Nous démontrons dans un premier temps l'irrationalité de √2 en utilisant 
+le [lemme d'Euclide](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide) 
 qui dit que si un nombre premier p divise x.y alors il divise x ou il divise y. Ce
 qui donne [en Coq](theories/nth_root.v#L35):
 
@@ -38,10 +55,6 @@ on n'utilise que le cas particulier suivant (où p=2),
 ```coq
 Lemma two_divides_square n : 2∣n*n → 2∣n.
 ```
-
-On rappelle que _p et q sont premiers entre eux_, noté
-noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
-à p et q (rappel: 1 divise tous les entiers).
 
 _Démonstration de l'irrationalité de √2:_
 soit une représentation rationnelle de √2, càd
