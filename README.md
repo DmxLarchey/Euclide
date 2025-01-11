@@ -32,7 +32,7 @@ Infix "∣" := div.
 
 Les notions de nombres premiers en eux, et de nombres premiers,
 en découlent:
-- on rappelle que _p et q sont premiers entre eux_, noté
+- on rappelle que _p et q sont premiers entre eux_,
 noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
 à p et q (rappel: 1 divise tous les entiers);
 - _p est premier_, noté `prime p` ci-dessous, si p≠1 et
