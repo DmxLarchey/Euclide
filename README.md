@@ -77,13 +77,13 @@ entiers de `nat`:
 Theorem Bezout : a ⊥ b ↔ ∃ u v u' v', u*a + v*b = 1 + u'*a + v'*b.
 ```
 
-La preuve du théorème de Bezout, pour sa partie → non-triviale,
-se fonde sur l'algorithme d'Euclide du calcul du PGCD, généralisé
-pour calculer un même temps les coefficients de Bezout. Nous
+La preuve du [théorème de Bezout](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Bachet-B%C3%A9zout), 
+pour sa partie non triviale (→), se fonde sur [l'algorithme d'Euclide](https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide_%C3%A9tendu) 
+du calcul du PGCD, généralisé pour calculer un même temps les coefficients de Bezout. Nous
 n'entrons pas dans les détails de cette preuve ici. Cet algorithme
 est fondamental: c'est l'un des tous premiers algorithmes découverts; 
-c'est aussi le premier exemple utilisé par D. Knuth dans _The Art of
-Computer Programming_.
+c'est aussi le premier exemple utilisé par D. Knuth dans [_The Art of
+Computer Programming_](https://fr.wikipedia.org/wiki/The_Art_of_Computer_Programming).
 
 ## Rationalité ou irrationalité de ⁿ√k 
 
