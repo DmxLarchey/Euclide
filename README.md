@@ -38,9 +38,13 @@ on n'utilise que le cas particulier suivant (2 est premier):
 Lemma two_divides_square n : 2∣n*n → 2∣n.
 ```
 
-_Démonstration:_
-Soit une représentation rationnelle de √2, càd
-p et q avec p et q premiers entre eux et 2q² = p².
+On rappelle que _p et q sont premiers entre eux_, noté
+noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
+à p et q (rappel: 1 divise tous les entiers).
+
+*Démonstration de l'irrationalité de √2:*
+soit une représentation rationnelle de √2, càd
+p et q avec p ⊥ q et 2q² = p².
 De 2q² = p², on déduit que 2 divise p²,
 donc par Euclide, 2 divise p.
 Ainsi p = 2r et donc 2q² = 4r² d'où q² = 2r². 
@@ -58,8 +62,8 @@ Theorem root_2_not_rational p q : p ⊥ q → 2*q*q = p*p → False.
 ## Identité de Bezout et lemme de Gauss
 
 La preuve du lemme d'Euclide peut se déduire de sa généralisation,
-le lemme de Gauss: si d et x sont premiers entre eux et d divise x.y
-alors d divise y. En Coq:
+le lemme de Gauss: si d et x sont premiers entre eux,  
+et d divise x.y alors d divise y. En Coq:
 
 ```coq
 Lemma Gauss d x y : d ⊥ x → d∣x*y → d∣y.
@@ -73,20 +77,28 @@ entiers de `nat`:
 Theorem Bezout : a ⊥ b ↔ ∃ u v u' v', u*a + v*b = 1 + u'*a + v'*b.
 ```
 
+La preuve du théorème de Bezout, pour sa partie → non-triviale,
+se fonde sur l'algorithme d'Euclide du calcul du PGCD, généralisé
+pour calculer un même temps les coefficients de Bezout. Nous
+n'entrons pas dans les détails de cette preuve ici. Cet algorithme
+est fondamental: c'est l'un des tous premiers algorithmes découverts; 
+c'est aussi le premier exemple utilisé par D. Knuth dans _The Art of
+Computer Programming_.
+
 ## Rationalité ou irrationalité de ⁿ√k 
 
 Nous définissons l'irrationalité d'une valeur x qui n'est pas représentable,
-ni dans les entiers, ni même dans les rationels, de la manière suivante: 
+ni dans les entiers, ni même dans les rationnels, de la manière suivante: 
 on utilise une propriété P(x) que devrait vérifier cette valeur et dont
 on peut trouver une forme équivalent au sein du type `nat`.
 Par exemple P(x) vaut x² = 2 pour exprimer que x une
-racine carrée de 2. Alors un rationel x = p/q satisfait P(x) ssi (p/q)² = 2 
+racine carrée de 2. Alors un rationnel x = p/q satisfait P(x) ssi (p/q)² = 2 
 ou encore ssi p² = 2q², qui est maintenant une équation représentable au sein
 du type `nat` de Coq. 
 
 Plus généralement, on utilise l'équation qⁿ.k = pⁿ pour exprimer que la
-racine n-ième de k, càd ⁿ√k, est un nombre rationel. A noter bien-sûr que
-p/q n'est un rationel que si q n'est pas nul. 
+racine n-ième de k, càd ⁿ√k, est un nombre rationnel. A noter bien sûr que
+p/q n'est un rationnel que si q n'est pas nul. 
 
 On en déduit les deux définitions suivant pour la rationalité, et son
 contraire l'irrationalité, de ⁿ√k.
@@ -97,8 +109,8 @@ Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 ```
 
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
-est rationel seulement si k est de la forme rⁿ (r entier).
-Evidement dans ce cas on a ⁿ√k = r et donc la réciproque est
+est rationnel seulement si k est de la forme rⁿ (r entier).
+Évidement dans ce cas on a ⁿ√k = r et donc la réciproque est
 triviale.
 
 ```coq
@@ -107,15 +119,15 @@ Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 
 Pour prouver que k entier n'est pas de la forme rⁿ (k et r entiers), il est
 plus pratique de procéder à un encadrement de k de la forme k ∈ ]iⁿ,(1+i)ⁿ[ 
-car il n'y a pas de d'entier de la forme rⁿ dans cet interval. En effet
-la fonction i ↦ iⁿ est strictement croissante. En Coq celà donne:
+car il n'y a pas de d'entier de la forme rⁿ dans cet intervalle. En effet
+la fonction i ↦ iⁿ est strictement croissante. En Coq cela donne:
 
 ```coq
 Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
 ```
 
 Par de bon encadrement nous obtenons donc facilement des preuves que
-³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationels. En Coq, celà
+³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. En Coq, celà
 donne:
  
 ```coq
