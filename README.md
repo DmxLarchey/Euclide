@@ -190,7 +190,7 @@ sur d, en utilisant l'ordre de divisibilité stricte noté `_ ⇂ _`. On
 élimine d'emblée le cas n=0 qui est trivial et donc on suppose n>0.
 
 On démontre donc ∀k, dⁿ∣kⁿ → d∣k en supposant, par induction, que la propriété
-est déjà établie pour tout e⇂d, càd IH: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k.
+est déjà établie pour tout e⇂d, càd on suppose IH: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k.
 
 Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IH. 
 On se place donc dans le cas où d>1. Alors, on trouve un facteur premier 
@@ -219,11 +219,11 @@ Theorem lt_induction (P : nat → Prop) : (∀n, (∀d, d<n → P d) → P n) �
 
 La preuve utilise aussi l'existence d'un facteur premier dans tout nombre
 entier d > 1. Comme expliqué ci-dessus, on le trouve en cherchant le premier 
-diviseur de d dans l'interval ]1,d], qui existe forcément car d∣d lui-même, mais
-n'est pas forcément le premier. Par premier, on étend ici le plus petit pour
-l'ordre naturel sur les entiers. Ceci nécessite pour chaque entier i∈]1,d]
-de pouvoir choisir si i∣d ou au contraire si ¬i∣d, càd, la décidabilité
-de la divisibilité, que l'on démontre pex. en utilisant la division
+diviseur de d dans l'interval ]1,d], qui existe forcément car d divise d lui-même,
+mais il n'est pas forcément le premier à diviser d. Par premier, on étend ici 
+le plus petit pour l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
+entier i∈]1,d] de pouvoir choisir si i∣d ou au contraire si ¬i∣d, càd, la 
+_décidabilité (faible)_ de la divisibilité, que l'on démontre pex. en utilisant la division
 Euclidienne [en Coq](theories/divides.v#L159):
 
 ```coq
