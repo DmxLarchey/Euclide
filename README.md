@@ -181,8 +181,9 @@ d n'est pas premier car on ne peut pas appliquer le lemme d'Euclide
 dans ce cas.
 
 Bien sûr, on peut utiliser le [théorème fondamental de l'arithmétique](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_fondamental_de_l%27arithm%C3%A9tique),
-la division de tout nombre entier non nul en facteurs premiers, mais c'est beaucoup
-de travail en Coq. 
+la décomposition de tout nombre entier non nul en facteurs premiers, mais c'est 
+un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
+d'une telle décomposition, à permutation près. 
 
 _Démonstration:_ Nous proposons au contraire de procéder par induction
 sur d, en utilisant l'ordre de divisibilité stricte noté `_ ⇂ _`. On
