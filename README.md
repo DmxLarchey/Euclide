@@ -38,16 +38,18 @@ on n'utilise que le cas particulier suivant (2 est premier):
 Lemma two_divides_square n : 2∣n*n → 2∣n.
 ```
 
+**Démonstration:**
 Soit une représentation rationnelle de √2, càd
 p et q avec p et q premiers entre eux et 2q² = p².
-
 De 2q² = p², on déduit que 2 divise p²,
 donc par Euclide, 2 divise p.
 Ainsi p = 2r et donc 2q² = 4r² d'où q² = 2r². 
 Ainsi 2 divise q² et par Euclide encore, 2 divise
-q. Donc 2 divise à la fois p et q. Ils ne peuvent
-donc pas être premiers entre eux, ce qui est
-absurde. En Coq celà donne le théorème suivant:
+q. Donc 2 divise à la fois p et q. Ils ne sont donc pas 
+premiers entre eux, ce qui contredit l'hypothèse de départ
+et conduit à une absurdité.
+
+En Coq celà donne le théorème suivant:
 
 ```coq
 Theorem root_2_not_rational p q : p ⊥ q → 2*q*q = p*p → False.
