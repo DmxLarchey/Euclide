@@ -38,7 +38,7 @@ on n'utilise que le cas particulier suivant (2 est premier):
 Lemma two_divides_square n : 2∣n*n → 2∣n.
 ```
 
-**Démonstration:**
+_Démonstration:_
 Soit une représentation rationnelle de √2, càd
 p et q avec p et q premiers entre eux et 2q² = p².
 De 2q² = p², on déduit que 2 divise p²,
