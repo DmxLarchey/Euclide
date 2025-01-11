@@ -288,11 +288,11 @@ Qed.
 (** Par définition, ⁿ√k est rationel, c-à-d k a une
     racine n-ième qui est rationelle, si il existe
     une fraction (entière) p/q (avec q≠0) telle que
-    k = (p/q)ⁿ, ou encore, qⁿk = pⁿ si on veut une
+    k = (p/q)ⁿ, ou encore, k.qⁿ = pⁿ si on veut une
     représentation de cette équation qui évite la
     notion de nombre rationel. *)
 
-Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ q^n*k = p^n.
+Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ k*q^n = p^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 
 (* Si k = (p/q)ⁿ (avec q≠0) alors k = rⁿ où r est entier
@@ -301,6 +301,7 @@ Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 Proof.
   intros (p & q & Hq & H).
+  rewrite (mult_comm k) in H.
   destruct (div_pow_simplify n q p) as [ (m & Hm) | H1 ]; try lia.
   + rewrite <- H; auto with div_db. 
   + exists m.
