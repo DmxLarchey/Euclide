@@ -132,29 +132,32 @@ Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 ```
 
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
-est rationnel seulement si k est de la forme rⁿ (r entier).
-Évidement dans ce cas on a ⁿ√k = r et donc la réciproque est
-triviale, [en Coq](theories/nth_root.v#L301)
+est rationnel seulement si k est de la forme rⁿ (r entier);
+évidement dans ce cas on a ⁿ√k = r, et donc la réciproque est
+triviale. Cela donne [en Coq](theories/nth_root.v#L301)
 
 ```coq
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 ```
 
-La preuve de ce résultat est centrale et est détaillée dans la section suivante.
+La preuve de ce résultat est centrale dans cette présentation
+et est détaillée dans la section suivante.
 
-Pour démontrer que k entier n'est pas de la forme rⁿ (k et r entiers), il est
-plus pratique de procéder à un encadrement de k de la forme k ∈ ]iⁿ,(1+i)ⁿ[ 
+On peut maintenant utiliser le résultat précédent `nth_root_rational__is_pow`
+pour démontrer l'irrationalité : on a réduit le problème à celui, 
+d'établir qu'un entier k n'est pas de la forme rⁿ (avec r entier).
+Pour cela, il suffit de procéder à un encadrement tel que k ∈ ]iⁿ,(1+i)ⁿ[ 
 car il n'y a pas de d'entier de la forme rⁿ dans cet intervalle. En effet
-la fonction i ↦ iⁿ est strictement croissante. [En Coq](theories/nth_root.v#L337) 
-cela donne :
+la fonction i ↦ iⁿ est strictement croissante (quand n>0). 
+[En Coq](theories/nth_root.v#L337) cela donne :
 
 ```coq
 Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
 ```
 
-Par de bons encadrements, nous obtenons facilement des preuves que
-³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. [En Coq](theories/nth_root.v#L350),
-ça donne :
+Par des encadrements bien choisis, nous obtenons facilement des preuves que
+³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. 
+[En Coq](theories/nth_root.v#L350), on obtient :
  
 ```coq
 Goal nth_root_irrational 2 2.
@@ -167,65 +170,84 @@ Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 
 ## ⁿ√k est rationnelle seulement si k est de la forme rⁿ
 
-Pour obtenir ce résultat, on va démontrer le résultat de simplication suivant
+Pour obtenir ce résultat, on va démontrer le théorème de simplication suivant :
+si dⁿ divise kⁿ alors d divise k ou n=0. Ce résultat découle du lemme d'Euclide 
+si d est un entier premier car dans ce cas, en supposant n > 0, comme d divise dⁿ, 
+il est clair que d divise kⁿ et donc, comme il est premier, d divise k. 
+L'argument est plus élaboré si d n'est pas un entier premier car on ne peut
+pas directement appliquer le lemme d'Euclide dans ce cas.
+
+Mais avant de passer à la preuve du théorème de simplification, voyons
+rapidement comme on peut en déduire le théorème `nth_root_rational__is_pow`
+càd ⁿ√k rationnel implique k=rⁿ. En effet, si ⁿ√k est rationnel alors 
+on a k.qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p ou n=0: 
+- si q|p alors il existe r tel que r.q=p et donc k=rⁿ;
+- si n=0 alors k=1=1ⁿ.
+
+Nous pouvons maintenant passer à la démonstration du théorème de simplification.
+Bien sûr, on pourrait utiliser le [théorème fondamental de l'arithmétique](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_fondamental_de_l%27arithm%C3%A9tique),
+càd la décomposition de tout nombre entier non nul en facteurs premiers, mais c'est 
+un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
+(à permutation près) d'une telle décomposition et ensuite de pouvoir comparer
+de ces décompositions en cas de divisibilité. Ce n'est pas infaisable, mais
+nous proposons un argument plus direct pour le résultat de simplification 
 [en Coq](theories/nth_root.v#L251) :
 
 ```coq
 Theorem div_pow_simplify n d k : d^n∣k^n → d∣k ∨ n=0.
 ```
 
-Le résultat découle du lemme d'Euclide si d est premier car dans ce
-cas, en supposant n > 0, comme d∣d^n, il est clair que d∣k^n et
-donc, comme il est premier, d∣k. C'est beaucoup moins trivial si
-d n'est pas premier car on ne peut pas appliquer le lemme d'Euclide
-dans ce cas.
+_Démonstration:_ Nous allons procéder par induction
+sur d, en utilisant l'_ordre de divisibilité stricte_ noté `_⇂_`. On
+élimine d'emblée le cas n=0 qui est trivial et donc on se place
+maintenant dans le cas n>0.
 
-Bien sûr, on peut utiliser le [théorème fondamental de l'arithmétique](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_fondamental_de_l%27arithm%C3%A9tique),
-la décomposition de tout nombre entier non nul en facteurs premiers, mais c'est 
-un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
-d'une telle décomposition, à permutation près. 
+On démontre la propriété de d suivante : ∀k, dⁿ∣kⁿ → d∣k, en supposant, 
+par induction, que la propriété est déjà établie pour tout e⇂d, 
+càd on suppose IHd: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k. A noter que la propriété
+est supposée vraie pour tout k (càd quantifiée universellement sur k), 
+ce qui est essentiel dans le raisonnement inductif ci-dessous.
 
-_Démonstration:_ Nous proposons au contraire de procéder par induction
-sur d, en utilisant l'ordre de divisibilité stricte noté `_ ⇂ _`. On
-élimine d'emblée le cas n=0 qui est trivial et donc on suppose n>0.
-
-On démontre donc ∀k, dⁿ∣kⁿ → d∣k en supposant, par induction, que la propriété
-est déjà établie pour tout e⇂d, càd on suppose IH: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k.
-
-Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IH. 
+Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IHd. 
 On se place donc dans le cas où d>1. Alors, on trouve un facteur premier 
 de d, càd p tel que d = p.e où p est premier et e⇂d, en procédant par 
 recherche exhaustive du premier diviseur de d dans l'interval ]1,d]. 
 Remarque: si d est déjà premier alors p=d et e=1.
 
-On a alors p∣d∣dⁿ∣kⁿ donc d'après Euclide on déduit p∣k. Ainsi, k = p.h
-et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant, on obtient eⁿ∣hⁿ et on applique
-l'hypothèse d'induction IH qui donne alors e∣h. On en conclut que d=p.e∣p.h=k.
+On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide 
+on déduit p∣k. Ainsi, k = p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
+par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
+qui donne alors e∣h. On en conclut que d=p.e divise k=p.h.
 _Fin de démonstration._
 
-Cette preuve fonctionne en utilisant le [principe d'induction](theories/divides.v#L221) 
-bien fondée suivant:
+Cette démonstration utilise le [principe d'induction](theories/divides.v#L221) 
+bien fondée suivant, plus précisément l'instance où `P d := ∀k, d^n∣k^n → d∣k` :
 
 ```coq
-Theorem sdiv_induction (P : nat → Prop) : (∀n, (∀d, d⇂n → P d) → P n) → ∀n, P n.
+Theorem sdiv_induction (P : nat → Prop) : (∀d, (∀e, e⇂d → P e) → P d) → ∀d, P d.
 ```
 
 qui est d'une forme similaire au principe d'induction forte sur l'ordre
-naturel strict des entiers, à la différence près où `_ ⇂ _` se substitue à `_ < _` :
+naturel strict des entiers, à la différence près que l'ordre de divisibilité
+strict `_⇂_` se substitue à l'ordre naturel strict `_<_` :
 
 ```coq
-Theorem lt_induction (P : nat → Prop) : (∀n, (∀d, d<n → P d) → P n) → ∀n, P n.
+Theorem lt_induction (P : nat → Prop) : (∀d, (∀e, e<d → P e) → P d) → ∀d, P d.
 ```
 
-La preuve utilise aussi l'existence d'un facteur premier dans tout nombre
-entier d > 1. Comme expliqué ci-dessus, on le trouve en cherchant le premier 
-diviseur de d dans l'interval ]1,d], qui existe forcément car d divise d lui-même,
-mais il n'est pas forcément le premier à diviser d. Par premier, on étend ici 
+La démonstration utilise aussi l'existence d'un facteur premier dans tout nombre
+entier d>1. Comme expliqué ci-dessus, on le trouve en cherchant le premier 
+diviseur de d dans l'intervalle ]1,d], qui existe forcément car d se divise lui-même,
+bien qu'il ne soit pas forcément le premier à diviser d. Par premier, on étend ici 
 le plus petit pour l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
-entier i∈]1,d] de pouvoir choisir si i∣d ou au contraire si ¬i∣d, càd, la 
-_décidabilité (faible)_ de la divisibilité, que l'on démontre pex. en utilisant la division
-Euclidienne [en Coq](theories/divides.v#L159):
+entier i=2,...,d (dans cet ordre) de pouvoir choisir si i∣d ou au contraire 
+si ¬i∣d, càd, on utilise la _décidabilité (faible)_ de la divisibilité, 
+[en Coq](theories/divides.v#L159) :
 
 ```coq
 Lemma div_wdec d n : d∣n ∨ ¬ d∣n.
 ``` 
+
+Cette décidabilité (faible) peut se démontrer pex. en utilisant la division 
+Euclidienne.
+
