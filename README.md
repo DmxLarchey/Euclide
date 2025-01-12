@@ -160,11 +160,7 @@ Par des encadrements bien choisis, nous obtenons facilement des preuves que
 [En Coq](theories/nth_root.v#L350), on obtient :
  
 ```coq
-Goal nth_root_irrational 2 2.
 Goal nth_root_irrational 3 7.
-Goal nth_root_irrational 5 132.
-Goal nth_root_irrational 2 255.
-Goal ∀n, 27 < n < 64 → nth_root_irrational 3 n.
 Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ```
 
