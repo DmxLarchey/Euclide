@@ -180,7 +180,7 @@ pas directement appliquer le lemme d'Euclide dans ce cas.
 Mais avant de passer à la preuve du théorème de simplification, voyons
 rapidement comme on peut en déduire le théorème `nth_root_rational__is_pow`
 càd ⁿ√k rationnel implique k=rⁿ. En effet, si ⁿ√k est rationnel alors 
-on a k.qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p ou n=0: 
+on a k.qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p oubien n=0: 
 - si q|p alors il existe r tel que r.q=p et donc k=rⁿ;
 - si n=0 alors k=1=1ⁿ.
 
@@ -215,7 +215,8 @@ recherche exhaustive du premier diviseur de d dans l'interval ]1,d].
 Remarque: si d est déjà premier alors p=d et e=1.
 
 On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide 
-on déduit p∣k. Ainsi, k = p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
+on déduit p∣k, car (contrairement à d) p est premier. 
+Ainsi, k = p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
 par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
 qui donne alors e∣h. On en conclut que d=p.e divise k=p.h.
 _Fin de démonstration._
