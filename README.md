@@ -171,8 +171,8 @@ Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ## ⁿ√k est rationnelle seulement si k est de la forme rⁿ
 
 Pour obtenir ce résultat, on va démontrer le théorème de simplication suivant :
-si dⁿ divise kⁿ alors d divise k ou n=0. Ce résultat découle du lemme d'Euclide 
-si d est un entier premier car dans ce cas, en supposant n > 0, comme d divise dⁿ, 
+si dⁿ divise kⁿ alors d divise k oubien n=0. Ce résultat découle du lemme d'Euclide 
+_si d est un entier premier_ car dans ce cas, en supposant n>0, comme d divise dⁿ, 
 il est clair que d divise kⁿ et donc, comme il est premier, d divise k. 
 L'argument est plus élaboré si d n'est pas un entier premier car on ne peut
 pas directement appliquer le lemme d'Euclide dans ce cas.
