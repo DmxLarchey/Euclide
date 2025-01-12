@@ -218,8 +218,8 @@ On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide
 on déduit p∣k, car  p est premier (contrairement à d qui ne l'est pas forcément). 
 Ainsi, k=p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
 par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
-qui donne alors e∣h. On en conclut que d=p.e divise k=p.h.
-_Fin de démonstration._
+qui donne alors e∣h. En effet, e divise strictement d. 
+On conclut que d=p.e divise k=p.h. _Fin de démonstration._
 
 Cette démonstration utilise le [principe d'induction](theories/divides.v#L221) 
 bien fondée suivant, plus précisément l'instance où `P d := ∀k, d^n∣k^n → d∣k` :
