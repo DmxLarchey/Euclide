@@ -211,7 +211,7 @@ ce qui est essentiel dans le raisonnement inductif ci-dessous.
 Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IHd. 
 On se place donc dans le cas où d>1. Alors, on trouve un facteur premier 
 de d, càd p tel que d = p.e où p est premier et e⇂d, en procédant par 
-recherche exhaustive du premier diviseur de d dans l'interval ]1,d]. 
+recherche exhaustive du plus petit diviseur de d dans l'interval ]1,d]. 
 Remarque: si d est déjà premier alors p=d et e=1.
 
 On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide 
@@ -236,11 +236,11 @@ strict `_⇂_` se substitue à l'ordre naturel strict `_<_` :
 Theorem lt_induction (P : nat → Prop) : (∀d, (∀e, e<d → P e) → P d) → ∀d, P d.
 ```
 
-La démonstration utilise aussi l'existence d'un facteur premier dans tout nombre
-entier d>1. Comme expliqué ci-dessus, on le trouve en cherchant le premier 
-diviseur de d dans l'intervalle ]1,d], qui existe forcément car d se divise lui-même,
-bien qu'il ne soit pas forcément le premier à diviser d. Par premier, on étend ici 
-le plus petit pour l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
+La démonstration de `div_pow_simplify` utilise aussi l'existence d'un facteur premier 
+dans tout nombre entier d>1. Comme expliqué ci-dessus, on le trouve en cherchant le plus 
+petit diviseur de d dans l'intervalle ]1,d], qui existe forcément car d se divise lui-même,
+bien qu'il ne soit pas forcément le plus petit à diviser d. Plus petit s'entend ici par
+rapport l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
 entier i=2,...,d (dans cet ordre) de pouvoir choisir si i∣d ou au contraire 
 si ¬i∣d, càd, on utilise la _décidabilité (faible)_ de la divisibilité, 
 [en Coq](theories/divides.v#L159) :
