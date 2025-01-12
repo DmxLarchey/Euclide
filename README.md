@@ -168,7 +168,7 @@ Goal ∀n, 27 < n < 64 → nth_root_irrational 3 n.
 Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ```
 
-## ⁿ√k est rationnelle seulement si k est de la forme rⁿ
+## ⁿ√k est rationnelle seulement si ⁿ√k est entier (càd k=rⁿ, r entier)
 
 Pour obtenir ce résultat, on va démontrer le théorème de simplication suivant :
 si dⁿ divise kⁿ alors d divise k oubien n=0. Ce résultat découle du lemme d'Euclide 
