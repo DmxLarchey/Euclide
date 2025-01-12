@@ -215,8 +215,8 @@ recherche exhaustive du premier diviseur de d dans l'interval ]1,d].
 Remarque: si d est déjà premier alors p=d et e=1.
 
 On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide 
-on déduit p∣k, car (contrairement à d) p est premier. 
-Ainsi, k = p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
+on déduit p∣k, car  p est premier (contrairement à d qui ne l'est pas forcément). 
+Ainsi, k=p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
 par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
 qui donne alors e∣h. On en conclut que d=p.e divise k=p.h.
 _Fin de démonstration._
