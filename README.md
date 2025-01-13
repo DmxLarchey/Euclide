@@ -178,7 +178,7 @@ Cette forme un peu particulière est imposée par l'absence d'entiers
 négatifs dans le type `nat`.
 La preuve du [théorème de Bezout](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Bachet-B%C3%A9zout), 
 pour sa partie non triviale (→), se fonde sur [l'algorithme d'Euclide](https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide)
-du calcul du PGCD, [étendu]((https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide_%C3%A9tendu) 
+du calcul du PGCD, [étendu](https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide_%C3%A9tendu) 
 pour obtenir simultanément les coefficients de Bezout. Nous
 n'entrons pas dans les détails de cette preuve ici. Cet algorithme
 est toutefois fondamental en arithmétique: c'est l'un des tous premiers algorithmes 
