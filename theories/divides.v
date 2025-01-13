@@ -26,11 +26,11 @@ Require Import arith_ext.
 
 (* "d divise n" si n est multiple de d. *)
 Definition div d n := ∃q, q*d = n.
-Infix "∣" := div.
+Notation "d ∣ n" := (div d n).
 
 (* "d divise n strictement", càd, d divise n mais n ne divise pas d. *)
 Definition sdiv d n := d∣n ∧ ¬ n∣d.
-Infix "⇂" := sdiv.
+Notation "d ⇂ n" := (sdiv d n).
 
 (** Quelques faits simples sur la divisibilité. *)
 
