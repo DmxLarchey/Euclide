@@ -9,6 +9,65 @@
 (**************************************************************)
 ```
 
+# Présentation du projet
+
+Nous expliquons une preuve mécanisée en Coq/Rocq de 
+l'irrationalité de √2, et plus généralement, de toute racine 
+n-ième ⁿ√k qui n'est pas entière, c'est à dire, si k n'est pas
+déjà de la forme rⁿ, un entier r élevé à la puissance n. Autrement dit,
+nous démontrons que les seules racines n-ème rationnelles sont celles 
+d'entiers élevés à la puissance n.
+
+## Comment est décomposé ce projet
+
+Il est composé de deux parties:
+- une explication informelle à lire ci-dessous;
+- cette explication est (hyper-)liée à une mécanisation Coq
+  accessible dans le repertoire [`theories`](theories);
+- le code Coq peut-être compilé puis exécuté dans une
+  [interface utilisateur de Coq](https://coq.inria.fr/user-interfaces.html)
+  telle que VsCoq ou encore CoqIDE.
+
+## Compiler le projet
+
+Pour compiler le projet, vous aurez besoin d'une version de
+Coq suffisement récente, càd `Coq 8.13` ou ultérieure. Seule
+une petite partie de la libraire standard livrée avec Coq est 
+utilisée, donc il n'est pas nécéssaire d'installer des librairies 
+supplémentaires.
+
+Une installation de Coq via [opam](https://coq.inria.fr/opam-using.html),
+ou encore via [Coq Platform](https://github.com/coq/platform)
+est recommandée mais pas indispensable.
+Un paquet standard Linux, Windows ou Mac devrait faire l'affaire.
+Toutefois le script [`Makefile`](theories/Makefile) fournit a été
+écrit pour Linux:
+
+```console
+git clone https://github.com/DmxLarchey/Euclide.git
+cd Euclide/theories
+make all
+```
+
+## Lire le code compilé
+
+Les utilisateurs expérimentés de Coq peuvent lire le code
+directement, càd, parcourir les fichiers:
+1. [`divides.v`](theories/divides.v): notion de divisibilité et de primalité; 
+2. [`gauss.v`](theories/gauss.v): théorème de Bezout, lemme de Gauss;
+3. [`nth_root.v`](theories/nth_root.v): √2 et ⁿ√k.
+
+dans cet ordre. Il y a aussi quelques fichiers d'outils:
+
+- [`arith_ext.v`](theories/arith_ext.v): quelques additions utiles au module `Arith`;
+- [`bounded_choice.v`](theories/bounded_choice.v): principe de choix fini;
+- [`measure.v`](theories/measure.v): induction sur une mesure;
+- [`gcd_rect.v`](theories/gcd_rct.v): principe de récurencce pour l'algorithme d'Euclide (PGCD).
+
+Pour les utilisateurs moins à l'aise avec Coq, nous fournissons un plan
+textuel de ces preuves mécanisées, avec des (hyper-)liens pour une
+description moins formelle des étapes menant aux principaux résultats.
+
 # Euclide et l'irrationalité de ⁿ√k pour k différent de rⁿ
 
 Nous n'utilisons que les entiers de Peano du type `nat` pour les résultats
@@ -19,15 +78,20 @@ cette librairie, même si mathématiquement, cette valeur est arbitraire
 car la fonction (x,y) ↦ xʸ n'est pas continue en (0,0). Ce
 cas marginal n'est de toutes façons pas intéressant dans notre étude.
 
-## Irrationalité de √2
+## Divisibilité et primalité
 
-La notion de divisibilité _d divise n_, notée d∣n, et l'ordre qu'elle
-induit sur les entiers, est l'outil fondamental dans les explications 
-qui suivent et est définie comme ceci [en Coq](theories/divides.v#L28):
+La notion de divisibilité, _d divise n_, avec la notation infixe d∣n, 
+et l'ordre qu'elle induit sur les entiers, est l'outil fondamental dans 
+les explications qui suivent. On utilisera aussi la notion de _divisibilité stricte_,
+d divise n mais n ne divise pas d, notée d⇂n. Elles sont définies 
+comme ceci [en Coq](theories/divides.v#L28):
 
 ```coq
 Definition div d n := ∃q, q*d = n.
-Infix "∣" := div.
+Notation "d ∣ n" := (div d n).
+
+Definition sdiv d n := d∣n ∧ ¬ n∣d.
+Notation "d ⇂ n" := (sdiv d n).
 ```
 
 Les notions de nombres premiers en eux, et de nombres premiers,
@@ -37,6 +101,8 @@ noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
 à p et q (rappel: 1 divise tous les entiers);
 - _p est premier_, noté `prime p` ci-dessous, si p>1 et
 n'a que deux diviseurs, 1 et p lui-même.
+
+## Irrationalité de √2
 
 Nous démontrons dans un premier temps l'irrationalité de √2 en utilisant 
 le [lemme d'Euclide](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide) 
