@@ -318,12 +318,12 @@ premier dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
 Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p q, prime p ∧ d = p*q ∧ q⇂d.
 ```
 
-Comme expliqué ci-dessus, on le trouve par recherche exhaustive (finie) de plus 
+Comme suggéré ci-dessus, on le trouve par recherche exhaustive (finie) de plus 
 petit diviseur de d dans l'intervalle ]1,d]. Il existe forcément car d divise d
 lui-même, même s'il n'est pas nécessairement le plus petit possible. Plus petit 
 s'entend ici par rapport l'ordre naturel sur les entiers. Ceci nécessite pour 
 chaque entier i=2,...,d (dans cet ordre) de pouvoir discriminer entre le cas
-où i divise d ou son contraire. On utilise pour ça la _décidabilité (faible)_ 
+où i divise d ou au contraire, i ne divise pas d. On utilise pour ça la _décidabilité (faible)_ 
 de la divisibilité, [en Coq](theories/divides.v#L159):
 ```coq
 Lemma div_wdec i d : i∣d ∨ ¬i∣d.

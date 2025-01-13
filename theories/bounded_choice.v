@@ -14,9 +14,9 @@ From Coq Require Import Arith Lia Utf8.
 (** Le theorème du choix borné cherche la première occurence
     de P dans l'interval [0,n[:
     si pour tout i∈[0,n[ on a soit P(i), soit Q(i)
-    alors soit
-    - il existe un i∈[0,n[ avec P(i), et Q(j) pour tout j∈[0,i[
-    - ou alors Q(j) pour tout j∈[0,n[ *)
+    alors
+    - soit il existe i∈[0,n[ avec P(i), et Q(j) pour tout j∈[0,i[
+    - soit Q(j) pour tout j∈[0,n[ *)
 
 Theorem bounded_choice (P Q : nat → Prop) n :
         (∀i, i < n → P i ∨ Q i)
@@ -37,21 +37,21 @@ Proof.
 Qed.
 
 (** Si P est satisfait à l'entier n, et décidable sur
-    l'interval [0,n[ alors il exists une première valeur m
+    l'interval [0,n[ alors il existe une première valeur m
     pour laquelle P est satisfait dans l'interval [0,n]. *)
 
 Corollary find_first (P : nat → Prop) n :
         (∀i, i < n → P i ∨ ¬ P i)
       → P n
-      → ∃i, i ≤ n ∧ P i ∧ ∀j, j < i → ¬ P j.
+      → ∃m, m ≤ n ∧ P m ∧ ∀j, j < m → ¬ P j.
 Proof.
   intros H1 H2.
   destruct bounded_choice
     with (P := P) (Q := fun i => ~ P i) (n := S n)
-    as [ (i & G1 & G2 & G3) | C ].
-  + intros i Hi.
+    as [ (m & G1 & G2 & G3) | C ].
+  + intros i ?.
     destruct (eq_nat_dec i n) as [ -> | ]; auto.
     apply H1; lia.
-  + exists i; split; auto; lia.
+  + exists m; split; auto; lia.
   + destruct (C n); auto; lia.
 Qed. 
