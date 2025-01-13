@@ -151,7 +151,7 @@ de divisibilité stricte (voir ci-dessous).
 
 La preuve du lemme d'Euclide peut se déduire de sa généralisation,
 le [lemme de Gauss](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide): 
-si d et x sont premiers entre eux, et d divise x.y 
+si d et x sont premiers entre eux, et d divise x⋅y 
 alors d divise y. [En Coq](theories/gauss.v#L108):
 
 ```coq
@@ -299,16 +299,22 @@ Theorem lt_induction (P : nat → Prop) : (∀d, (∀e, e<d → P e) → P d) �
 ```
 
 La démonstration de `div_pow_simplify` utilise aussi l'existence d'un facteur premier 
-dans tout nombre entier d>1. Comme expliqué ci-dessus, on le trouve en cherchant le plus 
-petit diviseur de d dans l'intervalle ]1,d], qui existe forcément car d se divise lui-même,
-bien qu'il ne soit pas forcément le plus petit à diviser d. Plus petit s'entend ici par
-rapport l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
-entier i=2,...,d (dans cet ordre) de pouvoir choisir si i∣d ou au contraire 
-si ¬i∣d, càd, on utilise la _décidabilité (faible)_ de la divisibilité, 
+dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
+
+```coq
+Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p q, prime p ∧ d = p*q ∧ q⇂d.
+```
+
+Comme expliqué ci-dessus, on le trouve en cherchant le plus 
+petit diviseur de d dans l'intervalle ]1,d], qui existe forcément car d divise d,
+bien qu'il ne soit pas forcément le plus petit à diviser d. Plus petit s'entend 
+ici par rapport l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
+entier i=2,...,d (dans cet ordre) de pouvoir choisir si i divise d ou non, 
+càd, on utilise la _décidabilité (faible)_ de la divisibilité, 
 [en Coq](theories/divides.v#L159) :
 
 ```coq
-Lemma div_wdec d n : d∣n ∨ ¬ d∣n.
+Lemma div_wdec i d : i∣d ∨ ¬i∣d.
 ``` 
 
 Cette décidabilité (faible) peut se démontrer pex. en utilisant la division 

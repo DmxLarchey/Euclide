@@ -142,7 +142,7 @@ Qed.
                        prime__ge_2 : prime_db.
 
 (* A partir du lemme d'Euclide *)
-Lemma two_divides_square n : 2∣n*n → 2∣n.
+Lemma two_divides_square k : 2∣k*k → 2∣k.
 Proof. intros []%Euclid; auto with prime_db. Qed.
 
 (* Une preuve qu'aucun rationel ne peut-être la
@@ -197,23 +197,23 @@ Qed.
     deux nombres premiers de grande taille, pex 250 chiffres
     décimaux est le record actuel (Wikipedia). *)
 
-(* On peut trouver un facteur premier de tout nombre n>1.
-   En effet, par "recherche exhaustive" dans ]1,n] sur la
-   condition λ i, i∣n. Comme n lui-même satisfait cette
+(* On peut trouver un facteur premier de tout nombre d>1.
+   En effet, par "recherche exhaustive" dans ]1,d] sur la
+   condition λ i, i∣d. Comme n lui-même satisfait cette
    condition, il existe un plus petit diviseur de n dans
    ]1,n], qui est alors un facteur premier de n. *) 
-Lemma prime_factor n : 1 < n → ∃ p q, prime p ∧ n = p*q ∧ q < n.
+Lemma prime_factor d : 1 < d → ∃ p q, prime p ∧ d = p*q ∧ q < d.
 Proof.
-  intros Hn.
-  destruct find_first with (P := λ i, 1 < i ∧ i∣n) (n := n) 
+  intros Hd.
+  destruct find_first with (P := λ i, 1 < i ∧ i∣d) (n := d) 
     as (p & H1 & (H2 & q & Hq) & H4).
-  + intros i ?; destruct (div_wdec i n); destruct (lt_dec 1 i); tauto.
+  + intros i ?; destruct (div_wdec i d); destruct (lt_dec 1 i); tauto.
   + auto with div_db.
   + exists p, q; split; split; try lia.
-    * intros d Hd.
-      destruct div_le with (1 := Hd); try lia.
-      revert Hd H; case 01n d as Hd'; intros Hd [H|H]%le_lt_eq_dec; auto.
-      - apply div_0l in Hd; lia.
+    * intros e He.
+      destruct div_le with (1 := He); try lia.
+      revert He H; case 01n e as He'; intros He [H|H]%le_lt_eq_dec; auto.
+      - apply div_0l in He; lia.
       - destruct (H4 _ H ); split; subst; auto with div_db.
     * rewrite <- Hq.
       replace q with (q*1) at 1 by ring.
@@ -221,16 +221,16 @@ Proof.
 Qed.
 
 (* On utilise aussi la forme positive ci-dessous, sans contrainte
-   a priori sur n, et le complément q dans p dans n divise strictement n. *)
-Corollary prime_factor' n : n = 0 ∨ n = 1 ∨ ∃ p q, prime p ∧ n = p*q ∧ q⇂n.
+   a priori sur d, et le complément q dans p dans d divise strictement d. *)
+Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 Proof.
-  case 01n n as Hn; auto; do 2 right.
-  destruct prime_factor with (1 := Hn) as (p & q & H1 & H2 & H3).
-  exists p, q; repeat (split; auto).
+  case 01n d as Hd; auto; do 2 right.
+  destruct prime_factor with (1 := Hd) as (p & e & H1 & H2 & H3).
+  exists p, e; repeat (split; auto).
   + exists p; auto.
   + rewrite H2; intros H.
     rewrite mult_comm in H.
-    replace q with (q*1) in H at 2 by lia.
+    replace e with (e*1) in H at 2 by lia.
     apply div_cancel in H as [ ->%div_1r | -> ]; lia.
 Qed.
 
@@ -258,30 +258,30 @@ Proof.
      après avoir généralisés k et Hd (qui dépend de k) *)
   induction d as [ d IHd ] in k, Hk |- * using sdiv_induction.
   (* Soit p un factor premier de d *)
-  destruct (prime_factor' d) as [ -> | [ -> | (p & q & H1 & H2 & H3) ] ].
+  destruct (prime_factor' d) as [ -> | [ -> | (p & e & H1 & H2 & H3) ] ].
   + (* cas d = 0 *)
     rewrite Nat.pow_0_l in Hk; try lia.
     apply div_0l, Nat.pow_eq_0 in Hk as ->; try lia; auto with div_db.
   + (* cas d = 1 *)
     auto with div_db.
-  + (* cas d > 1, alors d = p.q avec p premier et q⇂d *)
+  + (* cas d > 1, alors d = p.e avec p premier et e⇂d *)
     (* comme p∣d∣dⁿ∣kⁿ, alors p∣k par Euclid_pow *)
     assert (p∣k) as (r & Hr).
     1:{ apply Euclid_pow with n; trivial.
         apply div_trans with (2 := Hk),
               div_trans with d;
           subst; auto with div_db. }
-    (* donc k=p.r et donc dⁿ∣kⁿ donne pⁿqⁿ∣pⁿrⁿ *) 
+    (* donc k=p.r et donc dⁿ∣kⁿ donne pⁿeⁿ∣pⁿrⁿ *) 
     rewrite mult_comm in Hr.
     rewrite -> H2, <- Hr, !Nat.pow_mul_l in Hk.
-    (* comme pⁿqⁿ∣pⁿrⁿ, on déduit qⁿ∣rⁿ *)
+    (* comme pⁿeⁿ∣pⁿrⁿ, on déduit eⁿ∣rⁿ *)
     apply div_cancel in Hk
       as [ Hk | []%Nat.pow_eq_0_iff ];
       [ | apply prime__ge_2 in H1; lia ].
-    (* par hypothèse d'induction, de qⁿ∣rⁿ 
-       on déduit q|r *)
+    (* par hypothèse d'induction, de eⁿ∣rⁿ 
+       on déduit e|r *)
     generalize (IHd _ H3 _ Hk).
-    (* et donc d=p.q divise p.r=k *)
+    (* et donc d=p.e divise k=p.r *)
     subst d k; auto with div_db.
 Qed.
 

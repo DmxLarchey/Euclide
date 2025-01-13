@@ -141,36 +141,36 @@ Proof.
   + lia.
 Qed.
 
-(** On démontre que l'on peut "décider" la propriété d∣n
-    c'est à dire, soit obtenir une preuve de d∣n, soit
-    une preuve du contraire: ¬ d∣n, quels que soient d et n.
+(** On démontre que l'on peut "décider" la propriété i∣d
+    c'est à dire, soit obtenir une preuve de i∣d, soit
+    une preuve du contraire: ¬i∣d, quels que soient i et d.
 
     En logique intuitioniste, le "tiers exclu" ne s'applique
-    pas et donc on n'a pas forcément P ∨ ¬ P pour n'importe
+    pas et donc on n'a pas forcément P ∨ ¬P pour n'importe
     quelle proposition P.
     Seules les propositions P (logiquement) décidables satisfont
     cette propriété, ce qui est le cas de la divisibilité. *)
 
-(* Pour décider si d∣n, on utilise la division Euclidienne
-   dans le cas où d>0. On écrit n = q.d+r avec r < d. Si
-   r = 0 alors d∣n et si r > 0 alors ¬ d∣n.
-   Dans le cas où d=0, le résultat dépend juste de 
-   n=0 ou n>0. *)
-Lemma div_wdec d n : d∣n ∨ ¬ d∣n.
+(* Pour décider si i∣d, on utilise la division Euclidienne
+   dans le cas où i>0. On écrit d = q.i+r avec r < i. Si
+   r = 0 alors i∣d et si r > 0 alors ¬ i∣d.
+   Dans le cas où i=0, le résultat dépend juste de 
+   l'alternative d=0 ou d>0. *)
+Lemma div_wdec i d : i∣d ∨ ¬i∣d.
 Proof.
-  case 0n d as Hd.
-  + (* d = 0, on distingue n = 0 et n > 0 *)
-    case 0n n as Hn.
+  case 0n i as Hi.
+  + (* i=0, on distingue d=0 et d>0 *)
+    case 0n d as Hd.
     * left; auto with div_db.
     * right; intros ->%div_0l; lia.
-  + (* d > 0, on peut réaliser la division euclienne de n par d *)
-    destruct (eucl_dev _ Hd n) as [ q r H1 H2 ].
-    (* n = q.d + r et r < d *)
+  + (* i>0, on peut réaliser la division euclienne de d par i *)
+    destruct (eucl_dev i Hi d) as [ q r H1 H2 ].
+    (* d = q.i + r et r < i *)
     (* on distingue r = 0 et r > 0 *)
     revert H1 H2; case 0n r as Hr; intros H1 ->.
     * (* r = 0 *)
       left; auto with div_db.
-    * (* 0 < r < d *)
+    * (* 0 < r < i *)
       right; intros C.
       apply div_plus_equiv in C; auto with div_db.
       apply div_le in C; lia.
@@ -184,21 +184,21 @@ Qed.
    induction bien-fondée ou transfinie, sur les
    entiers naturels. *)
 Theorem lt_induction (P : nat → Prop) :
-    (∀n, (∀d, d<n → P d) → P n)
-   → ∀n,                   P n.
+    (∀d, (∀e, e<d → P e) → P d)
+   → ∀d,                   P d.
 Proof. apply (well_founded_induction lt_wf). Qed.
 
 Section sdiv_wf.
 
   (* On montre d'abord que tous les entiers positifs
      sont ⇂-accessibles, par induction forte. *)
-  Local Lemma Acc_sdiv_S n : Acc sdiv (S n).
+  Local Lemma Acc_sdiv_S d : Acc sdiv (S d).
   Proof.
-    induction n as [ n IH ] using lt_induction.
-    constructor; intros [ | d ].
-    + (* 0 ne divise pas strictement S n car S n ⇂ 0 *)
+    induction d as [ d IH ] using lt_induction.
+    constructor; intros [ | e ].
+    + (* 0 ne divise pas strictement S d car S d ⇂ 0 *)
       intros [ _ [] ]; auto with div_db.
-    + (* S d divise strictement S n alors d < n *)
+    + (* S e divise strictement S d alors e < d *)
       intros ?%sdiv_lt; apply IH; lia.
   Qed.
 
@@ -219,8 +219,8 @@ End sdiv_wf.
    transfinie basé sur la relation bien-fondée
    de divisibilité stricte ⇂. *)
 Theorem sdiv_induction (P : nat → Prop) :
-    (∀n, (∀d, d⇂n → P d) → P n)
-   → ∀n,                   P n.
+    (∀d, (∀e, e⇂d → P e) → P d)
+   → ∀d,                   P d.
 Proof. apply (well_founded_induction sdiv_wf). Qed.
 
 Check lt_induction.
