@@ -202,15 +202,18 @@ p/q n'est un rationnel que si q n'est pas nul.
 
 On en déduit la définition suivante pour la rationalité de ⁿ√k, ainsi 
 que pour son contraire l'irrationalité de ⁿ√k, [en Coq](theories/nth_root.v#L295):
-
 ```coq
 Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ k*q^n = p^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 ```
 
+Cette approche ne nécessite pas ni la définition de la fonction k ↦ ⁿ√k (donc au moins
+celle des nombres algébriques), ni même la notion de nombre rationnel. On utilise seulement
+la notion de représentation rationnelle via une fraction entière p/q.
+
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
-est rationnel seulement si k est de la forme rⁿ (r entier);
-évidement dans ce cas on a ⁿ√k = r, et donc la réciproque est
+est rationnel seulement si k est de la forme rⁿ (r entier).
+Évidement dans ce cas on a ⁿ√k=r et donc la réciproque est
 triviale. Cela donne [en Coq](theories/nth_root.v#L301)
 
 ```coq
@@ -220,23 +223,21 @@ Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 La preuve de ce résultat est centrale dans cette présentation
 et est détaillée dans la section suivante.
 
-On peut maintenant utiliser le résultat précédent `nth_root_rational__is_pow`
-pour démontrer l'irrationalité : on a réduit le problème à celui, 
-d'établir qu'un entier k n'est pas de la forme rⁿ (avec r entier).
-Pour cela, il suffit de procéder à un encadrement tel que k ∈ ]iⁿ,(1+i)ⁿ[ 
+On peut utiliser théorème `nth_root_rational__is_pow`
+pour démontrer l'irrationalité: on a réduit le problème à celui 
+d'établir qu'un entier k n'est pas de la forme rⁿ avec r entier.
+Pour y parvenir, il suffit de procéder à un encadrement tel que k ∈ ]iⁿ,(1+i)ⁿ[ 
 car il n'y a pas de d'entier de la forme rⁿ dans cet intervalle. En effet
 la fonction i ↦ iⁿ est strictement croissante (quand n>0). 
-[En Coq](theories/nth_root.v#L337) cela donne :
-
+[En Coq](theories/nth_root.v#L337) on obtient:
 ```coq
 Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
 ```
 
-Par des encadrements bien choisis, nous obtenons facilement des preuves que
-³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. 
-[En Coq](theories/nth_root.v#L350), on obtient :
- 
-```coq
+Par des encadrements bien choisis, nous obtenons maintenant facilement
+des preuves que ³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. 
+[En Coq](theories/nth_root.v#L350), on obtient:
+ ```coq
 Goal nth_root_irrational 3 7.
 Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ```
@@ -244,17 +245,17 @@ Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ## ⁿ√k est rationnelle seulement si ⁿ√k est entier (càd k=rⁿ, r entier)
 
 Pour obtenir ce résultat, on va démontrer le théorème de simplication suivant :
-si dⁿ divise kⁿ alors d divise k ou bien n=0. Ce résultat découle du lemme d'Euclide 
-_si d est un entier premier_ car dans ce cas, en supposant n>0, comme d divise dⁿ, 
-il est clair que d divise kⁿ et donc, comme il est premier, d divise k. 
+si dⁿ divise kⁿ alors d divise k ou bien n=0. Dans le _cas où d est un entier premier_,
+ce résultat découle du lemme d'Euclide: en supposant n>0, comme d divise dⁿ, 
+d divise donc aussi kⁿ et, comme il est premier, d divise donc k. 
 L'argument est plus élaboré si d n'est pas un entier premier car on ne peut
-pas directement appliquer le lemme d'Euclide dans ce cas.
+alors pas appliquer directement le lemme d'Euclide.
 
 Mais avant de passer à la preuve du théorème de simplification, voyons
 rapidement comme on peut en déduire le théorème `nth_root_rational__is_pow`
-càd ⁿ√k rationnel implique k=rⁿ. En effet, si ⁿ√k est rationnel alors 
-on a k⋅qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p oubien n=0: 
-- si q|p alors il existe r tel que r⋅q=p et donc k=rⁿ;
+càd ⁿ√k rationnel implique k=rⁿ pour un entier r. En effet, si ⁿ√k est rationnel alors 
+on a k⋅qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p ou bien n=0: 
+- si q|p alors il existe un entier r tel que r⋅q=p, et donc k=rⁿ;
 - si n=0 alors k=1=1ⁿ.
 
 Nous pouvons maintenant passer à la démonstration du théorème de simplification.
@@ -265,8 +266,7 @@ un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
 (à permutation près) d'une telle décomposition et ensuite de pouvoir comparer
 de ces décompositions en cas de divisibilité. Ce n'est pas infaisable, mais
 nous proposons un argument plus direct pour le résultat de simplification 
-[en Coq](theories/nth_root.v#L251) :
-
+[en Coq](theories/nth_root.v#L251):
 ```coq
 Theorem div_pow_simplify n d k : d^n∣k^n → d∣k ∨ n=0.
 ```
