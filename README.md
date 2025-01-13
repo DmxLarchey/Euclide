@@ -15,10 +15,10 @@ Nous expliquons une preuve mécanisée en Coq/Rocq de
 l'irrationalité de √2, et plus généralement, de toute racine 
 n-ième ⁿ√k qui n'est pas entière, c'est à dire, si k n'est pas
 déjà de la forme rⁿ, un entier r élevé à la puissance n. Autrement dit,
-nous démontrons que les seules racines n-ème rationnelles sont celles 
+nous démontrons que les seules racines n-ièmes rationnelles sont celles 
 d'entiers élevés à la puissance n.
 
-## Comment est décomposé ce projet
+## Structure du projet
 
 Il est composé de deux parties:
 - une explication informelle à lire ci-dessous;
@@ -31,8 +31,9 @@ Il est composé de deux parties:
 ## Compiler le projet
 
 Pour compiler le projet, vous aurez besoin d'une version de
-Coq suffisement récente, càd `Coq 8.13` ou ultérieure. Seule
-une petite partie de la libraire standard livrée avec Coq est 
+Coq pas trop ancienne, par exemple `Coq 8.13` ou une version ultérieure.
+Au moment du dépôt de ce projet, la version courrante est `Coq 8.20`.
+Seule une petite partie de la libraire standard livrée avec Coq est 
 utilisée, donc il n'est pas nécéssaire d'installer des librairies 
 supplémentaires.
 
@@ -51,27 +52,36 @@ make all
 
 ## Lire le code compilé
 
-Les utilisateurs expérimentés de Coq peuvent lire le code
+Le code est largement documenté. 
+Les utilisateurs expérimentés de Coq peuvent le lire
 directement, càd, parcourir les fichiers:
 1. [`divides.v`](theories/divides.v): notion de divisibilité et de primalité; 
 2. [`gauss.v`](theories/gauss.v): théorème de Bezout, lemme de Gauss;
 3. [`nth_root.v`](theories/nth_root.v): √2 et ⁿ√k.
 
-dans cet ordre. Il y a aussi quelques fichiers d'outils:
-
+plutôt dans cet ordre. Il y a aussi quelques fichiers d'outils:
 - [`arith_ext.v`](theories/arith_ext.v): quelques additions utiles au module `Arith`;
 - [`bounded_choice.v`](theories/bounded_choice.v): principe de choix fini;
 - [`measure.v`](theories/measure.v): induction sur une mesure;
 - [`gcd_rect.v`](theories/gcd_rct.v): principe de récurencce pour l'algorithme d'Euclide (PGCD).
 
 Pour les utilisateurs moins à l'aise avec Coq, nous fournissons un plan
-textuel de ces preuves mécanisées, avec des (hyper-)liens pour une
-description moins formelle des étapes menant aux principaux résultats.
+textuel de ces preuves mécanisées, avec les (hyper-)liens pour les étapes
+critiques. Nous obtenons ainsi une description un peu moins formelle des étapes 
+menant aux principaux résultats.
 
 # Euclide et l'irrationalité de ⁿ√k pour k différent de rⁿ
 
 Nous n'utilisons que les entiers de Peano du type `nat` pour les résultats
-et preuves qui suivent. Les opérations arithmétiques sont définies dans
+et preuves qui suivent. Nous rappelons qu'il s'agit du type inductif infini
+le plus simple des entiers représentés en unaire:
+```coq
+Inductive nat : Type := O : nat | S : nat → nat.
+```
+
+Coq fournit une interface avec la représentation décimale et ainsi
+il interpréte le nombre `3` comme le terme `S (S (S O))`.
+Les opérations arithmétiques sont définies dans
 la librairie standard de Coq au sein des modules `Init` et `Arith`.
 Attention, la valeur de `0^0` est définie comme étant `1` dans
 cette librairie, même si mathématiquement, cette valeur est arbitraire 
