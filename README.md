@@ -74,7 +74,7 @@ menant aux principaux résultats.
 
 Nous n'utilisons que les entiers de Peano du type `nat` pour les résultats
 et preuves qui suivent. Nous rappelons qu'il s'agit du type inductif infini
-le plus simple des entiers représentés en unaire:
+le plus simple, celui des entiers représentés en unaire:
 ```coq
 Inductive nat : Type := O : nat | S : nat → nat.
 ```
@@ -83,17 +83,17 @@ Coq fournit une interface avec la représentation décimale et ainsi
 il interpréte le nombre `3` comme le terme `S (S (S O))`.
 Les opérations arithmétiques sont définies dans
 la librairie standard de Coq au sein des modules `Init` et `Arith`.
-Attention, la valeur de `0^0` est définie comme étant `1` dans
-cette librairie, même si mathématiquement, cette valeur est arbitraire 
-car la fonction (x,y) ↦ xʸ n'est pas continue en (0,0). Ce
-cas marginal n'est de toutes façons pas intéressant dans notre étude.
+On peut noter que la valeur de `0^0` est définie comme étant `1` dans
+cette librairie, même si mathématiquement, ce choix peut être vu comme 
+arbitraire car la fonction (x,y) ↦ xʸ n'est pas continue en (0,0). Ce
+cas marginal n'est pas significatif dans ce projet.
 
 ## Divisibilité et primalité
 
-La notion de divisibilité, _d divise n_, avec la notation infixe d∣n, 
+La notion de _divisibilité_ "d divise n", avec la notation infixe d∣n, 
 et l'ordre qu'elle induit sur les entiers, est l'outil fondamental dans 
-les explications qui suivent. On utilisera aussi la notion de _divisibilité stricte_,
-d divise n mais n ne divise pas d, notée d⇂n. Elles sont définies 
+les explications qui suivent. On utilisera aussi la notion de _divisibilité stricte_
+"d divise n mais n ne divise pas d", notée d⇂n. Elles sont définies 
 comme ceci [en Coq](theories/divides.v#L28):
 
 ```coq
@@ -104,20 +104,20 @@ Definition sdiv d n := d∣n ∧ ¬ n∣d.
 Notation "d ⇂ n" := (sdiv d n).
 ```
 
-Les notions de nombres premiers en eux, et de nombres premiers,
+Les notions de nombres premiers en eux et de nombres premiers,
 en découlent:
 - on rappelle que _p et q sont premiers entre eux_,
 noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
-à p et q (rappel: 1 divise tous les entiers);
-- _p est premier_, noté `prime p` ci-dessous, si p>1 et
+à p et q (remarque: 1 divise tous les entiers);
+- _p est premier_, noté `prime p` ci-dessous, si p≠1 et
 n'a que deux diviseurs, 1 et p lui-même.
 
 ## Irrationalité de √2
 
 Nous démontrons dans un premier temps l'irrationalité de √2 en utilisant 
 le [lemme d'Euclide](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide) 
-qui dit que si un nombre premier p divise x.y alors il divise x ou il divise y. Ce
-qui donne [en Coq](theories/nth_root.v#L35):
+qui affirme que si un nombre premier p divise x⋅y alors il divise x ou il divise y. Ce
+qui s'exprime comme suit [en Coq](theories/nth_root.v#L35):
 
 ```coq
 Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
@@ -153,7 +153,7 @@ A noter que l'hypothèse p ⊥ q n'est pas strictement nécessaire
 bien qu'elle soit essentielle au raisonnement ci-dessus. Pour
 s'en défaire, il faut rajouter une induction, sous une forme
 ou une autre, soit en montrant que toute fraction p/q à une 
-représentation où p ⊥ q (calcul du PGCD pex), ou encore,
+représentation où p est premier avec q (calcul du PGCD pex), ou encore,
 en raisonnant par induction bien fondée sur p avec pex l'ordre
 de divisibilité stricte (voir ci-dessous).
 
@@ -169,20 +169,21 @@ Lemma Gauss d x y : d ⊥ x → d∣x*y → d∣y.
 ```
 
 Le lemme de Gauss est lui-même conséquence de l'identité de Bezout
-que l'on peut exprimer ainsi [en Coq](theories/gauss.v#L94)), 
-en n'utilisant que des entiers de `nat`:
-
+que l'on peut exprimer ainsi [en Coq](theories/gauss.v#L94):
 ```coq
 Theorem Bezout : a ⊥ b ↔ ∃ u v u' v', u*a + v*b = 1 + u'*a + v'*b.
 ```
 
+Cette forme un peu particulière est imposée par l'absence d'entiers
+négatifs dans le type `nat`.
 La preuve du [théorème de Bezout](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Bachet-B%C3%A9zout), 
-pour sa partie non triviale (→), se fonde sur [l'algorithme d'Euclide](https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide_%C3%A9tendu) 
-du calcul du PGCD, généralisé pour calculer un même temps les coefficients de Bezout. Nous
+pour sa partie non triviale (→), se fonde sur [l'algorithme d'Euclide](https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide)
+du calcul du PGCD, [étendu]((https://fr.wikipedia.org/wiki/Algorithme_d%27Euclide_%C3%A9tendu) 
+pour obtenir simultanément les coefficients de Bezout. Nous
 n'entrons pas dans les détails de cette preuve ici. Cet algorithme
-est fondamental: c'est l'un des tous premiers algorithmes découverts; 
-c'est aussi le tout premier algorithme analysé par D. Knuth dans [_The Art of
-Computer Programming_](https://fr.wikipedia.org/wiki/The_Art_of_Computer_Programming).
+est toutefois fondamental en arithmétique: c'est l'un des tous premiers algorithmes 
+découverts; c'est aussi le premier algorithme présenté et analysé par Donald Knuth 
+dans son oeuvre de référence [_The Art of Computer Programming_](https://fr.wikipedia.org/wiki/The_Art_of_Computer_Programming).
 
 ## Rationalité ou irrationalité de ⁿ√k 
 
