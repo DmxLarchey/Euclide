@@ -141,7 +141,7 @@ Ainsi p = 2r et donc 2q² = 4r² d'où q² = 2r².
 Ainsi 2 divise q² et par Euclide encore, 2 divise
 q. Donc 2 divise à la fois p et q. Ils ne sont donc pas 
 premiers entre eux, ce qui contredit l'hypothèse de départ
-et conduit à une absurdité. _Fin de démonstration._
+et conduit à une absurdité. _Fin de la démonstration._
 
 [En Coq](theories/nth_root.v#L154) cela donne le théorème suivant:
 
@@ -277,9 +277,9 @@ sur d, en utilisant l'_ordre de divisibilité stricte_ noté `_⇂_`. On
 maintenant dans le cas n>0.
 
 On démontre la propriété de d suivante : ∀k, dⁿ∣kⁿ → d∣k, en supposant, 
-par induction, que la propriété est déjà établie pour tout e⇂d, 
-càd on suppose IHd: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k. A noter que la propriété
-est supposée vraie pour tout k (càd quantifiée universellement sur k), 
+par induction, que la propriété est déjà établie pour tout e divisant strictement d, 
+càd on suppose IHd: ∀e, e⇂d → ∀k, eⁿ∣kⁿ → e∣k. À noter: la propriété
+est supposée vraie pour tout k (càd est quantifiée universellement/∀ sur k), 
 ce qui est essentiel dans le raisonnement inductif ci-dessous.
 
 Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IHd. 
@@ -292,43 +292,43 @@ On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide
 on déduit p∣k, car  p est premier (contrairement à d qui ne l'est pas forcément). 
 Ainsi, k=p⋅h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
 par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
-qui donne alors e∣h. En effet, e divise strictement d. 
-On conclut que d=p⋅e divise k=p⋅h. _Fin de démonstration._
+qui donne alors e∣h. C'est possible car e divise strictement d. 
+On en conclut que d=p⋅e divise k=p⋅h. _Fin de la démonstration._
 
 Cette démonstration utilise le [principe d'induction](theories/divides.v#L221) 
-bien fondée suivant, plus précisément l'instance où `P d := ∀k, d^n∣k^n → d∣k` :
-
+bien fondée suivant, plus précisément l'instance où `P d := ∀k, d^n∣k^n → d∣k`:
 ```coq
 Theorem sdiv_induction (P : nat → Prop) : (∀d, (∀e, e⇂d → P e) → P d) → ∀d, P d.
 ```
 
-qui est d'une forme similaire au principe d'induction forte sur l'ordre
+qui est a une forme similaire au principe d'induction forte sur l'ordre
 naturel strict des entiers, à la différence près que l'ordre de divisibilité
-strict `_⇂_` se substitue à l'ordre naturel strict `_<_` :
-
+strict `_⇂_` remplace l'ordre naturel strict `_<_` :
 ```coq
 Theorem lt_induction (P : nat → Prop) : (∀d, (∀e, e<d → P e) → P d) → ∀d, P d.
 ```
 
-La démonstration de `div_pow_simplify` utilise aussi l'existence d'un facteur premier 
-dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
+Nous insistons sur ces principes d'induction car ils sont constitutifs
+et essentiels dans les systèmes de preuves constructifs fondés sur la 
+théorie inductive des types, tels que celui de Coq.
 
+La démonstration de `div_pow_simplify` utilise également l'existence d'un facteur 
+premier dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
 ```coq
 Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p q, prime p ∧ d = p*q ∧ q⇂d.
 ```
 
-Comme expliqué ci-dessus, on le trouve en cherchant le plus 
-petit diviseur de d dans l'intervalle ]1,d], qui existe forcément car d divise d,
-bien qu'il ne soit pas forcément le plus petit à diviser d. Plus petit s'entend 
-ici par rapport l'ordre naturel sur les entiers. Ceci nécessite pour chaque 
-entier i=2,...,d (dans cet ordre) de pouvoir choisir si i divise d ou non, 
-càd, on utilise la _décidabilité (faible)_ de la divisibilité, 
-[en Coq](theories/divides.v#L159) :
-
+Comme expliqué ci-dessus, on le trouve par recherche exhaustive (finie) de plus 
+petit diviseur de d dans l'intervalle ]1,d]. Il existe forcément car d divise d
+lui-même, même s'il n'est pas nécessairement le plus petit possible. Plus petit 
+s'entend ici par rapport l'ordre naturel sur les entiers. Ceci nécessite pour 
+chaque entier i=2,...,d (dans cet ordre) de pouvoir discriminer entre le cas
+où i divise d ou son contraire. On utilise pour ça la _décidabilité (faible)_ 
+de la divisibilité, [en Coq](theories/divides.v#L159):
 ```coq
 Lemma div_wdec i d : i∣d ∨ ¬i∣d.
 ``` 
 
-Cette décidabilité (faible) peut se démontrer pex. en utilisant la division 
-Euclidienne.
+Cette décidabilité (faible) peut se démontrer par exemple en utilisant la 
+division Euclidienne.
 
