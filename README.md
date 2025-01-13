@@ -171,7 +171,7 @@ pour sa partie non triviale (→), se fonde sur [l'algorithme d'Euclide](https:/
 du calcul du PGCD, généralisé pour calculer un même temps les coefficients de Bezout. Nous
 n'entrons pas dans les détails de cette preuve ici. Cet algorithme
 est fondamental: c'est l'un des tous premiers algorithmes découverts; 
-c'est aussi le premier exemple utilisé par D. Knuth dans [_The Art of
+c'est aussi le tout premier algorithme analysé par D. Knuth dans [_The Art of
 Computer Programming_](https://fr.wikipedia.org/wiki/The_Art_of_Computer_Programming).
 
 ## Rationalité ou irrationalité de ⁿ√k 
@@ -185,7 +185,7 @@ racine cubique de 5. Alors un rationnel x = p/q satisfait P(x) ssi (p/q)³ = 5
 ou encore ssi p³ = 5q³, qui est maintenant une équation représentable au sein
 du type `nat` de Coq. 
 
-Plus généralement, on utilise l'équation k.qⁿ = pⁿ pour exprimer que la
+Plus généralement, on utilise l'équation k⋅qⁿ = pⁿ pour exprimer que la
 racine n-ième de k, càd ⁿ√k, est un nombre rationnel. A noter bien sûr que
 p/q n'est un rationnel que si q n'est pas nul.
 
@@ -233,7 +233,7 @@ Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
 ## ⁿ√k est rationnelle seulement si ⁿ√k est entier (càd k=rⁿ, r entier)
 
 Pour obtenir ce résultat, on va démontrer le théorème de simplication suivant :
-si dⁿ divise kⁿ alors d divise k oubien n=0. Ce résultat découle du lemme d'Euclide 
+si dⁿ divise kⁿ alors d divise k ou bien n=0. Ce résultat découle du lemme d'Euclide 
 _si d est un entier premier_ car dans ce cas, en supposant n>0, comme d divise dⁿ, 
 il est clair que d divise kⁿ et donc, comme il est premier, d divise k. 
 L'argument est plus élaboré si d n'est pas un entier premier car on ne peut
@@ -242,12 +242,13 @@ pas directement appliquer le lemme d'Euclide dans ce cas.
 Mais avant de passer à la preuve du théorème de simplification, voyons
 rapidement comme on peut en déduire le théorème `nth_root_rational__is_pow`
 càd ⁿ√k rationnel implique k=rⁿ. En effet, si ⁿ√k est rationnel alors 
-on a k.qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p oubien n=0: 
-- si q|p alors il existe r tel que r.q=p et donc k=rⁿ;
+on a k⋅qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p oubien n=0: 
+- si q|p alors il existe r tel que r⋅q=p et donc k=rⁿ;
 - si n=0 alors k=1=1ⁿ.
 
 Nous pouvons maintenant passer à la démonstration du théorème de simplification.
-Bien sûr, on pourrait utiliser le [théorème fondamental de l'arithmétique](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_fondamental_de_l%27arithm%C3%A9tique),
+Bien sûr, on pourrait utiliser le 
+[théorème fondamental de l'arithmétique](https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_fondamental_de_l%27arithm%C3%A9tique),
 càd la décomposition de tout nombre entier non nul en facteurs premiers, mais c'est 
 un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
 (à permutation près) d'une telle décomposition et ensuite de pouvoir comparer
@@ -272,16 +273,16 @@ ce qui est essentiel dans le raisonnement inductif ci-dessous.
 
 Si d=0 ou d=1, le résultat est immédiat, sans utilisation de IHd. 
 On se place donc dans le cas où d>1. Alors, on trouve un facteur premier 
-de d, càd p tel que d = p.e où p est premier et e⇂d, en procédant par 
+de d, càd p tel que d = p⋅e où p est premier et e⇂d, en procédant par 
 recherche exhaustive du plus petit diviseur de d dans l'interval ]1,d]. 
 Remarque: si d est déjà premier alors p=d et e=1.
 
 On a alors la chaine de divisibilité p∣d∣dⁿ∣kⁿ donc d'après Euclide 
 on déduit p∣k, car  p est premier (contrairement à d qui ne l'est pas forcément). 
-Ainsi, k=p.h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
+Ainsi, k=p⋅h et donc pⁿeⁿ=dⁿ∣kⁿ=pⁿhⁿ. En simplifiant
 par pⁿ, on obtient eⁿ∣hⁿ et on applique l'hypothèse d'induction IHd
 qui donne alors e∣h. En effet, e divise strictement d. 
-On conclut que d=p.e divise k=p.h. _Fin de démonstration._
+On conclut que d=p⋅e divise k=p⋅h. _Fin de démonstration._
 
 Cette démonstration utilise le [principe d'induction](theories/divides.v#L221) 
 bien fondée suivant, plus précisément l'instance où `P d := ∀k, d^n∣k^n → d∣k` :
