@@ -9,7 +9,29 @@
 
 Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides bounded_choice prime euclid.
+Require Import arith_ext divides bounded_choice prime gauss.
+
+(* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
+   si p premier divise x.y alors p divise x ou p divise y. *)
+Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
+Proof.
+  intros Hp H.
+  destruct (prime__div_or_coprime _ Hp x).
+  + left.
+    trivial.
+  + right.
+    apply (Gauss p x y).
+    * trivial.
+    * trivial.
+Qed.
+
+(* Conséquence direct du lemme d'Euclide sur les diviseurs premiers de kⁿ *)
+Lemma Euclid_pow p k n : prime p → p∣k^n → p∣k.
+Proof.
+  intros Hp; induction n as [ | n IHn ]; simpl.
+  + intros ->%div_1r; auto with div_db.
+  + intros []%Euclid; eauto.
+Qed.
 
 (* Le cas particulier d'Euclide pour p∣k² 
    permet la preuve d'irrationalité de √2 *)
@@ -54,14 +76,6 @@ Qed.
     Mais d'abord on présente une forme positive et
     adaptée de la recherche d'un facteur premier dans
     un entier. *)
-
-(* Conséquence direct du lemme d'Euclide sur les diviseurs premiers de kⁿ *)
-Proposition Euclid_pow p k n : prime p → p∣k^n → p∣k.
-Proof.
-  intros Hp; induction n as [ | n IHn ]; simpl.
-  + intros ->%div_1r; auto with div_db.
-  + intros []%Euclid; eauto.
-Qed.
 
 (* On utilise aussi la forme positive de prime_factor ci-dessous, sans contrainte
    a priori sur d, et le complément e de p dans d divise strictement d. *)
