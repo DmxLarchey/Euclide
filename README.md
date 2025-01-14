@@ -72,15 +72,30 @@ menant aux principaux résultats.
 
 # Euclide et l'irrationalité de ⁿ√k pour k différent de rⁿ
 
-Nous n'utilisons que les entiers de Peano du type `nat` pour les résultats
-et preuves qui suivent. Nous rappelons qu'il s'agit du type inductif infini
-le plus simple, celui des entiers représentés en unaire:
+Dans le code Coq, **nous utilisons uniquement les entiers de Peano** du type `nat` pour 
+les résultats et preuves qui suivent. Aussi ce type est implicite et n'est jamais rappelé dans 
+les énoncés Coq. Toutefois, dans le discours informel ci-dessous, lorsque nous écrivons ⁿ√k, 
+nous parlons d'un nombre qui peut ne pas être entier ni même rationnel. Pour simplifier
+on pourrait le voir comme un nombre réel par exemple.
+
+Nous rappelons que le type `nat` est le type inductif infini le plus simple, 
+celui des entiers représentés en notation unaire (un seul chiffre):
 ```coq
 Inductive nat : Type := O : nat | S : nat → nat.
 ```
 
 Coq fournit une interface avec la représentation décimale et ainsi
-il interpréte le nombre `3` comme le terme `S (S (S O))`.
+il interprète le nombre `0` comme le terme `O` et le nombre `3` comme 
+le terme `S (S (S O))`, càd `S` appliqué 3 trois fois à `O`. Coq
+construit automatiquement le principe d'induction suivant
+```coq
+Theorem nat_ind (P : nat → Prop) : P O → (∀n, P n → P (S n)) → ∀n, P n.
+```
+
+généralement appelé _raisonnement par récurrence_. Nous verrons 
+également d'autres principes d'inductions sur le type `nat` plus
+adaptés aux propriétés de la notion de divisibilité.
+
 Les opérations arithmétiques sont définies dans
 la librairie standard de Coq au sein des modules `Init` et `Arith`.
 On peut noter que la valeur de `0^0` est définie comme étant `1` dans
