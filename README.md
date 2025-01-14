@@ -207,14 +207,13 @@ Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 ```
 
-Cette approche ne nécessite ni la définition de la fonction k ↦ ⁿ√k (donc au moins
+Cette approche ne nécessite ni la définition de la fonction k ↦ ⁿ√k (impliquant au moins
 celle des nombres algébriques), ni même la notion de nombre rationnel. On utilise seulement
-la notion de représentation rationnelle via une fraction entière a/b.
+la notion de représentation rationnelle via une fraction a/b composée de deux entiers(avec b≠0).
 
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
-est rationnel seulement si k est de la forme rⁿ (r entier).
-Évidement dans ce cas on a ⁿ√k=r et donc la réciproque est
-triviale. Cela donne [en Coq](theories/nth_root.v#L301)
+admet une représentation rationnelle seulement si k est de 
+la forme rⁿ (r entier). Cela donne [en Coq](theories/nth_root.v#L301)
 
 ```coq
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
@@ -222,6 +221,8 @@ Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 
 C'est le résultat principal de cette présentation
 et sa preuve est détaillée dans la section suivante.
+A noter que la réciproque est triviale:
+si k=rⁿ alors r/1 est une représentation rationnelle de ⁿ√k.
 
 On peut utiliser théorème `nth_root_rational__is_pow`
 pour démontrer l'irrationalité. En effet, on a réduit le problème à celui 
