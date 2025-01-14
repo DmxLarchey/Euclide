@@ -7,9 +7,9 @@
 (*        Mozilla Public License Version 2.0, MPL-2.0         *)
 (**************************************************************)
 
-Require Import Arith Lia Utf8.
+From Coq Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides bounded_choice prime gauss.
+Require Import arith_ext divides bounded_choice prime gauss (* bezout *).
 
 (* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
    si p premier divise x.y alors p divise x ou p divise y. *)

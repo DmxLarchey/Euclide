@@ -7,7 +7,7 @@
 (*        Mozilla Public License Version 2.0, MPL-2.0         *)
 (**************************************************************)
 
-Require Import Arith Lia Wellfounded Extraction Utf8.
+From Coq Require Import Arith Lia Wellfounded Extraction Utf8.
 
 Require Import measure.
 

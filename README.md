@@ -55,15 +55,18 @@ make all
 Le code est largement documenté. 
 Les utilisateurs expérimentés de Coq peuvent le lire
 directement, càd, parcourir les fichiers:
-1. [`divides.v`](theories/divides.v): notion de divisibilité et de primalité; 
-2. [`gauss.v`](theories/gauss.v): théorème de Bezout, lemme de Gauss;
-3. [`nth_root.v`](theories/nth_root.v): √2 et ⁿ√k.
+1. [`divides.v`](theories/divides.v): notion de divisibilité
+1. [`prime.v`](theories/prime.v): notion de primalité;
+1. [`bezout.v`](theories/gauss.v): théorème de Bezout puis lemme de Gauss;
+1. [`gauss.v`](theories/gauss.v): lemme de Gauss en suivant [l'argumentaire d'Euclide VII](https://www.imo.universite-paris-saclay.fr/~daniel.perrin/CAPES/arithmetique/lemmeEuclide.pdf);
+1. [`nth_root.v`](theories/nth_root.v): irrationalité de √2 et ⁿ√k.
 
-plutôt dans cet ordre. Il y a aussi quelques fichiers d'outils:
+plutôt dans cet ordre. Il y a aussi quelques fichiers d'outils ou de remarques annexes:
 - [`arith_ext.v`](theories/arith_ext.v): quelques additions utiles au module `Arith`;
 - [`bounded_choice.v`](theories/bounded_choice.v): principe de choix fini;
 - [`measure.v`](theories/measure.v): induction sur une mesure;
-- [`gcd_rect.v`](theories/gcd_rct.v): principe de récurencce pour l'algorithme d'Euclide (PGCD).
+- [`gcd_rect.v`](theories/gcd_rct.v): principe de récurrence pour l'algorithme d'Euclide (PGCD);
+- [`primes_unbounded.v](theories/primes_unbounded.v): infinité des nombres premiers.
 
 Pour les utilisateurs moins à l'aise avec Coq, nous fournissons un plan
 textuel de ces preuves mécanisées, avec les (hyper-)liens pour les étapes

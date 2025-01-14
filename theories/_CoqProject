@@ -6,6 +6,7 @@ divides.v
 gcd_rect.v
 bounded_choice.v
 prime.v
+primes_unbounded.v
 bezout.v
 gauss.v
 nth_root.v

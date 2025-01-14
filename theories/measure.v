@@ -7,7 +7,7 @@
 (*        Mozilla Public License Version 2.0, MPL-2.0         *)
 (**************************************************************)
 
-Require Import Arith Wellfounded Extraction Utf8.
+From Coq Require Import Arith Wellfounded Extraction Utf8.
 
 (** Induction on 1, 2 or 3 values combined as
     a documented tactic notation *)

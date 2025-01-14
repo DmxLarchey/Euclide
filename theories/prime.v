@@ -90,6 +90,46 @@ Proof.
     * trivial.
 Qed.
 
+(** On montre qu'on peut toujours trouver un facteur premier 
+    d'un nombre entier autre que 0 ou 1.
+
+    A noter que la factorization des entiers est un problème
+    complexe et on ne connait pas d'algorithme "vraiment" plus
+    efficace que la recherche exhaustive effectuée ci-dessous.
+    Par "vraiment", on entend ici non-exponentiel.
+    La complexité théorique de la factorisation d'un entier
+    reste un problème ouvert (P ou NP ?), mais d'importance
+    pratique très grande dans la mesure où le chiffrement
+    assymétrique RSA est fondé sur la difficulté de la
+    factorisation de semi-premiers, càd des produits de
+    deux nombres premiers de grande taille, pex 250 chiffres
+    décimaux est le record actuel (Wikipedia). *)
+
+(* On peut trouver un facteur premier de tout nombre d>1.
+   En effet, par "recherche exhaustive" dans ]1,d] sur la
+   condition λ i, i∣d. Comme n lui-même satisfait cette
+   condition, il existe un plus petit diviseur de n dans
+   ]1,n], qui est alors un facteur premier de n. *) 
+Lemma prime_factor d : 1 < d → ∃ p e, prime p ∧ d = p*e ∧ e < d.
+Proof.
+  intros Hd.
+  destruct find_first with (P := λ i, 1 < i ∧ i∣d) (n := d) 
+    as (p & H1 & (H2 & e & He) & H4).
+  + intros i ?; destruct (div_wdec i d); destruct (lt_dec 1 i); tauto.
+  + auto with div_db.
+  + exists p, e; split; split; try lia.
+    * intros f Hf.
+      destruct div_le with (1 := Hf); try lia.
+      revert Hf H.
+      zero one or more f as Hf';
+        intros Hf [H|H]%le_lt_eq_dec; auto.
+      - apply div_0l in Hf; lia.
+      - destruct (H4 _ H ); split; subst; auto with div_db.
+    * rewrite <- He.
+      replace e with (e*1) at 1 by ring.
+      apply Nat.mul_lt_mono_pos_l; lia.
+Qed.
+
 Section checking_primality.
 
   (** Pour démontrer qu'un nombre n'est pas premier,
@@ -162,94 +202,4 @@ End checking_primality.
 
 #[global] Hint Resolve two_prime three_prime 
                        four_not_prime five_prime : prime_db.
-
-(** On montre qu'on peut toujours trouver un facteur premier 
-    d'un nombre entier autre que 0 ou 1.
-
-    A noter que la factorization des entiers est un problème
-    complexe et on ne connait pas d'algorithme "vraiment" plus
-    efficace que la recherche exhaustive effectuée ci-dessous.
-    Par "vraiment", on entend ici non-exponentiel.
-    La complexité théorique de la factorisation d'un entier
-    reste un problème ouvert (P ou NP ?), mais d'importance
-    pratique très grande dans la mesure où le chiffrement
-    assymétrique RSA est fondé sur la difficulté de la
-    factorisation de semi-premiers, càd des produits de
-    deux nombres premiers de grande taille, pex 250 chiffres
-    décimaux est le record actuel (Wikipedia). *)
-
-(* On peut trouver un facteur premier de tout nombre d>1.
-   En effet, par "recherche exhaustive" dans ]1,d] sur la
-   condition λ i, i∣d. Comme n lui-même satisfait cette
-   condition, il existe un plus petit diviseur de n dans
-   ]1,n], qui est alors un facteur premier de n. *) 
-Lemma prime_factor d : 1 < d → ∃ p e, prime p ∧ d = p*e ∧ e < d.
-Proof.
-  intros Hd.
-  destruct find_first with (P := λ i, 1 < i ∧ i∣d) (n := d) 
-    as (p & H1 & (H2 & e & He) & H4).
-  + intros i ?; destruct (div_wdec i d); destruct (lt_dec 1 i); tauto.
-  + auto with div_db.
-  + exists p, e; split; split; try lia.
-    * intros f Hf.
-      destruct div_le with (1 := Hf); try lia.
-      revert Hf H.
-      zero one or more f as Hf';
-        intros Hf [H|H]%le_lt_eq_dec; auto.
-      - apply div_0l in Hf; lia.
-      - destruct (H4 _ H ); split; subst; auto with div_db.
-    * rewrite <- He.
-      replace e with (e*1) at 1 by ring.
-      apply Nat.mul_lt_mono_pos_l; lia.
-Qed.
-
-(** Petite parenthèse : les nombres premiers sont en quantité
-    non-bornée, c-à-d infinie. Pour démontrer celà, on peut
-    par exemple utiliser la fonction factorielle, 
-    fact m = 1*...*m *)
-
-Goal fact 0 = 1.
-Proof. simpl. trivial. Qed.
-
-Fact fact_S m : fact (S m) = (S m)*fact m.
-Proof. simpl. trivial. Qed.
-
-(* Tous les nombres 1..m divisent fact m *)
-Fact fact_div m d : 0 < d → d ≤ m → d∣fact m.
-Proof.
-  intros H; induction 1.
-  + destruct d; [ lia | ].
-    rewrite fact_S; auto with div_db.
-  + rewrite fact_S; auto with div_db.
-Qed.
-
-(* Les nombres premiers sont en quantité non-bornée,
-   c-à-d il n'y a pas de majorant pour les nombres
-   premiers.
-
-   En effet, dans les facteurs premiers de 1+fact m,
-   il y a forcément un premier plus grand que m. *)
-Theorem prime_unbounded m : ∃p, prime p ∧ m < p.
-Proof.
-  (* On choisit un facteur premier p de 1+fact m*)
-  destruct (prime_factor (1+fact m))
-    as (p & e & H1 & H2 & _);
-    [ generalize (fact_neq_0 m); lia | ].
-  (* alors p est forcément plus grand que m *)
-  exists p; split; auto.
-  destruct (le_lt_dec p m) as [ H3 | ]; auto.
-  (* En effet, si p ≤ m, alors on a p divise fact m *)
-  apply fact_div in H3;
-    [ | apply prime_ge_2 in H1; lia ].
-  (* mais p divise fact m+1 *) 
-  assert (p∣fact m+1) as C
-    by (exists e; lia).
-  (* donc p divise 1, absurde *)
-  apply div_plus_equiv, div_1r in C; auto.
-  apply prime_ge_2 in H1; lia.
-Qed.
-
-(** Fin de la parentèse sur le quantité infinie de 
-    nombres premiers. *)
-
 
