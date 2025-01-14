@@ -20,14 +20,27 @@ Definition prime p := p≠1 ∧ ∀d, d∣p → d=1 ∨ d=p.
 
 (* Si p est premier et ne divise pas x, alors il est premier avec x. *)
 Lemma prime_no_div_coprime p : prime p → ∀x, ¬ p∣x → p ⊥ x.
-Proof. intros H ? ? ? [ -> | -> ]%H; now trivial. Qed.
+Proof.
+  (* intros H ? ? ? [ -> | -> ]%H; now trivial. *)
+  intros Hp x C d Hdp H.
+  apply Hp in Hdp.
+  destruct Hdp as [ -> | -> ].
+  + trivial.
+  + contradict C.
+    trivial.
+Qed.
 
 (* si p est premier, soit il divise x, soit il est premier avec x. *)
 Lemma prime__div_or_coprime p : prime p → ∀x, p∣x ∨ p ⊥ x.
 Proof.
   intros ? x.
-  destruct (div_wdec p x); auto.
-  right; now apply prime_no_div_coprime.
+  destruct (div_wdec p x).
+  + left.
+    trivial.
+  + right.
+    apply prime_no_div_coprime.
+    * trivial.
+    * trivial.
 Qed.
 
 (* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
@@ -67,10 +80,10 @@ Section checking_primality.
      Ce n'est pas possible pour 0 ou 1 mais pour les autres
      ça marche bien. *)
 
-  Remark product_not_prime p q : 1 < p -> 1 < q -> ¬ prime (p*q).
+  Remark product_not_prime a b : 1 < a -> 1 < b -> ¬ prime (a*b).
   Proof.
-    intros Hp Hq [ ? H].
-    destruct (H p); try lia; auto with div_db.
+    intros Ha Hb [ ? H].
+    destruct (H a); try lia; auto with div_db.
     symmetry in H1; rewrite mult_comm in H1.
     apply mult_ka_a_cancel in H1; lia.
   Qed.
@@ -149,27 +162,27 @@ Proof. intros []%Euclid; auto with prime_db. Qed.
    racine carrée de 2: √2 est irrationel.
 
    A noter que l'on démontrer ici qu'il n'existe
-   pas de fraction p/q "normalisée" (càd avec p ⊥ q)
+   pas de fraction a/b "normalisée" (càd avec a ⊥ b)
    dont le carré soit 2. *)
-Theorem root_2_not_rational p q : p ⊥ q → 2*q*q = p*p → False.
+Theorem root_2_not_rational a b : a ⊥ b → 2*b*b = a*a → False.
 Proof.
-  intros Hpq H.
-  assert (2∣p) as Hp
+  intros Hab H.
+  assert (2∣a) as Ha
     by (apply two_divides_square; rewrite <- H; auto with div_db).
-  case Hp; intros p' Hp'.
-  rewrite mult_comm in Hp'.
-  rewrite <- Hp', <- !mult_assoc in H.
+  case Ha; intros a' Ha'.
+  rewrite mult_comm in Ha'.
+  rewrite <- Ha', <- !mult_assoc in H.
   apply mult_eq_cancel in H; [ | lia ].
-  assert (2∣q) as Hq
+  assert (2∣b) as Hb
     by (apply two_divides_square; rewrite H; auto with div_db).
-  (* 2 divise p et q, et p ⊥ q donc 2 = 1 ce qui est absurde. *)
-  generalize (Hpq _ Hp Hq).
+  (* 2 divise a et b, et a ⊥ b donc 2 = 1 ce qui est absurde. *)
+  generalize (Hab _ Ha Hb).
   discriminate.
 Qed.
 
 (** Si on veut montrer par exemple que √12 n'est pas
     rationnel, la technique précédente ne fonctionne
-    pas parce que 12∣p² n'implique pas 12∣p.
+    pas parce que 12∣a² n'implique pas 12∣a.
     En effet 12 = 2².3 n'est pas un nombre premier
     et ainsi on a pex 12∣6² mais 12 ne divise pas 6.
 
@@ -202,28 +215,28 @@ Qed.
    condition λ i, i∣d. Comme n lui-même satisfait cette
    condition, il existe un plus petit diviseur de n dans
    ]1,n], qui est alors un facteur premier de n. *) 
-Lemma prime_factor d : 1 < d → ∃ p q, prime p ∧ d = p*q ∧ q < d.
+Lemma prime_factor d : 1 < d → ∃ p e, prime p ∧ d = p*e ∧ e < d.
 Proof.
   intros Hd.
   destruct find_first with (P := λ i, 1 < i ∧ i∣d) (n := d) 
-    as (p & H1 & (H2 & q & Hq) & H4).
+    as (p & H1 & (H2 & e & He) & H4).
   + intros i ?; destruct (div_wdec i d); destruct (lt_dec 1 i); tauto.
   + auto with div_db.
-  + exists p, q; split; split; try lia.
-    * intros e He.
-      destruct div_le with (1 := He); try lia.
-      revert He H.
-      zero one or more e as He';
-        intros He [H|H]%le_lt_eq_dec; auto.
-      - apply div_0l in He; lia.
+  + exists p, e; split; split; try lia.
+    * intros f Hf.
+      destruct div_le with (1 := Hf); try lia.
+      revert Hf H.
+      zero one or more f as Hf';
+        intros Hf [H|H]%le_lt_eq_dec; auto.
+      - apply div_0l in Hf; lia.
       - destruct (H4 _ H ); split; subst; auto with div_db.
-    * rewrite <- Hq.
-      replace q with (q*1) at 1 by ring.
+    * rewrite <- He.
+      replace e with (e*1) at 1 by ring.
       apply Nat.mul_lt_mono_pos_l; lia.
 Qed.
 
 (* On utilise aussi la forme positive ci-dessous, sans contrainte
-   a priori sur d, et le complément q dans p dans d divise strictement d. *)
+   a priori sur d, et le complément e de p dans d divise strictement d. *)
 Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 Proof.
   zero one or more d as Hd; auto; do 2 right.
@@ -289,25 +302,25 @@ Qed.
 
 (** Par définition, ⁿ√k est rationel, c-à-d k a une
     racine n-ième qui est rationelle, si il existe
-    une fraction (entière) p/q (avec q≠0) telle que
-    k = (p/q)ⁿ, ou encore, k.qⁿ = pⁿ si on veut une
+    une fraction (entière) a/b (avec b≠0) telle que
+    k = (a/b)ⁿ, ou encore, k.bⁿ = aⁿ si on veut une
     représentation de cette équation qui évite la
     notion de nombre rationel. *)
 
-Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ k*q^n = p^n.
+Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 
-(* Si k = (p/q)ⁿ (avec q≠0) alors k = rⁿ où r est entier
+(* Si k = (a/b)ⁿ (avec b≠0) alors k = rⁿ où r est entier
    Attention, dans le cas où n=0 alors x⁰ = 1 dans les
    entiers naturels, et en particulier 0⁰ = 1. *)
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 Proof.
-  intros (p & q & Hq & H).
+  intros (a & b & Hb & H).
   rewrite (mult_comm k) in H.
-  destruct (div_pow_simplify n q p) as [ (m & Hm) | H1 ]; try lia.
+  destruct (div_pow_simplify n b a) as [ (m & Hm) | H1 ]; try lia.
   + rewrite <- H; auto with div_db. 
   + exists m.
-    replace (p^n) with (q^n*m^n) in H.
+    replace (a^n) with (b^n*m^n) in H.
     * apply mult_eq_cancel in H; auto.
       apply pow_gt_0; lia.
     * rewrite <- Hm, Nat.pow_mul_l; ring.
@@ -365,27 +378,27 @@ Proof. solve irrational with 2. Qed.
 Goal nth_root_irrational 2 255.
 Proof. solve irrational with 15. Qed.
 
-(* ³√n irrationelle pour n ∈ ]27,64[ *)
-Goal ∀n, 27 < n < 64 → nth_root_irrational 3 n.
+(* ³√x irrationelle pour x ∈ ]27,64[ *)
+Goal ∀x, 27 < x < 64 → nth_root_irrational 3 x.
 Proof. solve irrational with 3. Qed.
 
-(* ⁵√n irrationel pour n ∈ ]32,243[ *)
-Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
+(* ⁵√x irrationel pour x ∈ ]32,243[ *)
+Goal ∀x, 32 < x < 243 → nth_root_irrational 5 x.
 Proof. solve irrational with 2. Qed.
 
 (** Petite parenthèse : les nombres premiers sont en quantité
     non-bornée, c-à-d infinie. Pour démontrer celà, on peut
     par exemple utiliser la fonction factorielle, 
-    fact n = 1*...*n *)
+    fact m = 1*...*m *)
 
 Goal fact 0 = 1.
-Proof. reflexivity. Qed.
+Proof. simpl. trivial. Qed.
 
-Fact fact_S n : fact (S n) = (S n)*fact n.
-Proof. reflexivity. Qed.
+Fact fact_S m : fact (S m) = (S m)*fact m.
+Proof. simpl. trivial. Qed.
 
-(* Tous les nombres 1..n divisent fact n *)
-Fact fact_div n d : 0 < d → d ≤ n → d∣fact n.
+(* Tous les nombres 1..m divisent fact m *)
+Fact fact_div m d : 0 < d → d ≤ m → d∣fact m.
 Proof.
   intros H; induction 1.
   + destruct d; [ lia | ].
@@ -394,26 +407,26 @@ Proof.
 Qed.
 
 (* Les nombres premiers sont en quantité non-bornée,
-   c-à-d il n'y a pas de majorant pour les nombres 
+   c-à-d il n'y a pas de majorant pour les nombres
    premiers.
 
-   En effet, dans les facteurs premiers de 1+fact n,
-   il y a forcément un premier plus grand que n. *)
-Theorem prime_unbounded n : ∃p, prime p ∧ n < p.
+   En effet, dans les facteurs premiers de 1+fact m,
+   il y a forcément un premier plus grand que m. *)
+Theorem prime_unbounded m : ∃p, prime p ∧ m < p.
 Proof.
-  (* On choisit un facteur premier p de 1+fact n*)
-  destruct (prime_factor (1+fact n))
-    as (p & q & H1 & H2 & _);
-    [ generalize (fact_neq_0 n); lia | ].
-  (* alors p est forcément plus grand que n *)
+  (* On choisit un facteur premier p de 1+fact m*)
+  destruct (prime_factor (1+fact m))
+    as (p & e & H1 & H2 & _);
+    [ generalize (fact_neq_0 m); lia | ].
+  (* alors p est forcément plus grand que m *)
   exists p; split; auto.
-  destruct (le_lt_dec p n) as [ H3 | ]; auto.
-  (* En effet, si p ≤ n, alors on a p divise fact n *)
+  destruct (le_lt_dec p m) as [ H3 | ]; auto.
+  (* En effet, si p ≤ m, alors on a p divise fact m *)
   apply fact_div in H3;
     [ | apply prime__ge_2 in H1; lia ].
-  (* mais p divise fact n+1 *) 
-  assert (p∣fact n+1) as C
-    by (exists q; lia).
+  (* mais p divise fact m+1 *) 
+  assert (p∣fact m+1) as C
+    by (exists e; lia).
   (* donc p divise 1, absurde *)
   apply div_plus_equiv, div_1r in C; auto.
   apply prime__ge_2 in H1; lia.

@@ -106,9 +106,9 @@ Notation "d ⇂ n" := (sdiv d n).
 
 Les notions de nombres premiers en eux et de nombres premiers,
 en découlent:
-- on rappelle que _p et q sont premiers entre eux_,
-noté p ⊥ q ci-dessous, si seul 1 est un diviseur commun
-à p et q (remarque: 1 divise tous les entiers);
+- on rappelle que _x et y sont premiers entre eux_,
+noté x ⊥ y ci-dessous, si seul 1 est un diviseur commun
+à x et y (remarque: 1 divise tous les entiers);
 - _p est premier_, noté `prime p` ci-dessous, si p≠1 et
 n'a que deux diviseurs, 1 et p lui-même.
 
@@ -129,32 +129,32 @@ on n'utilise que le cas particulier suivant (où p=2),
 [en Coq](theories/nth_root.v#L145)
 
 ```coq
-Lemma two_divides_square n : 2∣n*n → 2∣n.
+Lemma two_divides_square k : 2∣k*k → 2∣k.
 ```
 
 _Démonstration de l'irrationalité de √2:_
 soit une représentation rationnelle de √2, càd
-p et q avec p ⊥ q et 2q² = p².
-De 2q² = p², on déduit que 2 divise p²,
-donc par Euclide, 2 divise p.
-Ainsi p = 2r et donc 2q² = 4r² d'où q² = 2r². 
-Ainsi 2 divise q² et par Euclide encore, 2 divise
-q. Donc 2 divise à la fois p et q. Ils ne sont donc pas 
+a et b avec a ⊥ b et 2b² = a².
+De 2b² = a², on déduit que 2 divise a²,
+donc par Euclide, 2 divise a.
+Ainsi a = 2r et donc 2b² = 4r² d'où b² = 2r². 
+Ainsi 2 divise b² et par Euclide encore, 2 divise
+b. Donc 2 divise à la fois a et b. Ils ne sont donc pas 
 premiers entre eux, ce qui contredit l'hypothèse de départ
 et conduit à une absurdité. _Fin de la démonstration._
 
 [En Coq](theories/nth_root.v#L154) cela donne le théorème suivant:
 
 ```coq
-Theorem root_2_not_rational p q : p ⊥ q → 2*q*q = p*p → False.
+Theorem root_2_not_rational a b : a ⊥ b → 2*b*b = a*a → False.
 ```
 
-A noter que l'hypothèse p ⊥ q n'est pas strictement nécessaire
+A noter que l'hypothèse a ⊥ b n'est pas strictement nécessaire
 bien qu'elle soit essentielle au raisonnement ci-dessus. Pour
 s'en défaire, il faut rajouter une induction, sous une forme
-ou une autre, soit en montrant que toute fraction p/q à une 
-représentation où p est premier avec q (calcul du PGCD pex), ou encore,
-en raisonnant par induction bien fondée sur p avec pex l'ordre
+ou une autre, soit en montrant que toute fraction a/b à une 
+représentation où a est premier avec b (calcul du PGCD pex), ou encore,
+en raisonnant par induction bien fondée sur a avec pex l'ordre
 de divisibilité stricte (voir ci-dessous).
 
 ## Identité de Bezout et lemme de Gauss
@@ -192,24 +192,24 @@ ni dans les entiers, ni même dans les rationnels, de la manière suivante:
 on utilise une propriété P(x) que devrait vérifier cette valeur et dont
 on peut trouver une forme équivalent au sein du type `nat`.
 Par exemple P(x) vaut x³ = 5 pour exprimer que x une
-racine cubique de 5. Alors un rationnel x = p/q satisfait P(x) ssi (p/q)³ = 5 
-ou encore ssi p³ = 5q³, qui est maintenant une équation représentable au sein
+racine cubique de 5. Alors un rationnel x = a/b satisfait P(x) ssi (a/b)³ = 5 
+ou encore ssi a³ = 5b³, qui est maintenant une équation représentable au sein
 du type `nat` de Coq. 
 
-Plus généralement, on utilise l'équation k⋅qⁿ = pⁿ pour exprimer que la
+Plus généralement, on utilise l'équation k⋅bⁿ = aⁿ pour exprimer que la
 racine n-ième de k, càd ⁿ√k, est un nombre rationnel. A noter bien sûr que
-p/q n'est un rationnel que si q n'est pas nul.
+a/b n'est un rationnel que si b n'est pas nul.
 
 On en déduit la définition suivante pour la rationalité de ⁿ√k, ainsi 
 que pour son contraire l'irrationalité de ⁿ√k, [en Coq](theories/nth_root.v#L295):
 ```coq
-Definition nth_root_rational n k := ∃ p q, q ≠ 0 ∧ k*q^n = p^n.
+Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
 ```
 
-Cette approche ne nécessite pas ni la définition de la fonction k ↦ ⁿ√k (donc au moins
+Cette approche ne nécessite ni la définition de la fonction k ↦ ⁿ√k (donc au moins
 celle des nombres algébriques), ni même la notion de nombre rationnel. On utilise seulement
-la notion de représentation rationnelle via une fraction entière p/q.
+la notion de représentation rationnelle via une fraction entière a/b.
 
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
 est rationnel seulement si k est de la forme rⁿ (r entier).
@@ -220,11 +220,11 @@ triviale. Cela donne [en Coq](theories/nth_root.v#L301)
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 ```
 
-La preuve de ce résultat est centrale dans cette présentation
-et est détaillée dans la section suivante.
+C'est le résultat principal de cette présentation
+et sa preuve est détaillée dans la section suivante.
 
 On peut utiliser théorème `nth_root_rational__is_pow`
-pour démontrer l'irrationalité: on a réduit le problème à celui 
+pour démontrer l'irrationalité. En effet, on a réduit le problème à celui 
 d'établir qu'un entier k n'est pas de la forme rⁿ avec r entier.
 Pour y parvenir, il suffit de procéder à un encadrement tel que k ∈ ]iⁿ,(1+i)ⁿ[ 
 car il n'y a pas de d'entier de la forme rⁿ dans cet intervalle. En effet
@@ -234,12 +234,12 @@ la fonction i ↦ iⁿ est strictement croissante (quand n>0).
 Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
 ```
 
-Par des encadrements bien choisis, nous obtenons maintenant facilement
-des preuves que ³√7 ou encore ⁵√n (avec n ∈ ]32,243[) sont irrationnels. 
+Par des encadrements pertinents, nous obtenons maintenant facilement
+des preuves que (par exemple) ³√7 ou encore ⁵√x (avec x ∈ ]32,243[) sont irrationnels. 
 [En Coq](theories/nth_root.v#L350), on obtient:
  ```coq
 Goal nth_root_irrational 3 7.
-Goal ∀n, 32 < n < 243 → nth_root_irrational 5 n.
+Goal ∀x, 32 < x < 243 → nth_root_irrational 5 x.
 ```
 
 ## ⁿ√k est rationnelle seulement si ⁿ√k est entier (càd k=rⁿ, r entier)
@@ -254,8 +254,8 @@ alors pas appliquer directement le lemme d'Euclide.
 Mais avant de passer à la preuve du théorème de simplification, voyons
 rapidement comme on peut en déduire le théorème `nth_root_rational__is_pow`
 càd ⁿ√k rationnel implique k=rⁿ pour un entier r. En effet, si ⁿ√k est rationnel alors 
-on a k⋅qⁿ=pⁿ avec q≠0. Donc qⁿ|pⁿ et ainsi, par simplification, q|p ou bien n=0: 
-- si q|p alors il existe un entier r tel que r⋅q=p, et donc k=rⁿ;
+on a k⋅bⁿ=aⁿ avec b≠0. Donc bⁿ|aⁿ et ainsi, par simplification, b|a ou bien n=0: 
+- si b|a alors il existe un entier r tel que r⋅b=a, et donc k=rⁿ;
 - si n=0 alors k=1=1ⁿ.
 
 Nous pouvons maintenant passer à la démonstration du théorème de simplification.
@@ -315,7 +315,7 @@ théorie inductive des types, tels que celui de Coq.
 La démonstration de `div_pow_simplify` utilise également l'existence d'un facteur 
 premier dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
 ```coq
-Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p q, prime p ∧ d = p*q ∧ q⇂d.
+Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 ```
 
 Comme suggéré ci-dessus, on le trouve par recherche exhaustive (finie) de plus 
