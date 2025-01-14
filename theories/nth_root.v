@@ -20,6 +20,7 @@ Proof.
   + left.
     trivial.
   + right.
+    Check Gauss.
     apply (Gauss p x y).
     * trivial.
     * trivial.
@@ -33,7 +34,7 @@ Proof.
   + intros []%Euclid; eauto.
 Qed.
 
-(* Le cas particulier d'Euclide pour p∣k² 
+(* Le cas particulier d'Euclide pour 2∣k² 
    permet la preuve d'irrationalité de √2 *)
 Lemma two_divides_square k : 2∣k*k → 2∣k.
 Proof. intros []%Euclid; auto with prime_db. Qed.
@@ -56,7 +57,7 @@ Proof.
   assert (2∣b) as Hb
     by (apply two_divides_square; rewrite H; auto with div_db).
   (* 2 divise a et b, et a ⊥ b donc 2 = 1 ce qui est absurde. *)
-  generalize (Hab _ Ha Hb).
+  red in Hab. generalize (Hab _ Ha Hb).
   discriminate.
 Qed.
 
