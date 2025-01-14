@@ -7,25 +7,13 @@
 (*        Mozilla Public License Version 2.0, MPL-2.0         *)
 (**************************************************************)
 
-Require Import Arith Lia Utf8.
+From Coq Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides gcd_rect.
+(** On donne une preuve du lemme d'Euclide en passant
+    pour le théorème de Bezout et le lemme de Gauss,
+    donc Euclide est un cas particuliers. *)
 
-(** Notation et base d'astuces *)
-
-#[global] Reserved Notation "x ⊥ y" (at level 70, no associativity, format "x  ⊥  y").
-#[global] Create HintDb coprime_db.
-
-(** Notion d'entiers premiers entre eux *)
-
-(* x et y sont premiers entre eux si leur seul diviseur commun est 1. *)
-Definition coprime x y := ∀d, d∣x → d∣y → d=1.
-Infix "⊥" := coprime.
-
-Fact coprime_sym x y : x ⊥ y → y ⊥ x.  Proof. intros H ? ? ?; now apply H. Qed.
-Fact coprime_0r x :    x ⊥ 0 → x = 1.  Proof. intros H; apply H; auto with div_db. Qed.
-Fact coprime_0l y :    0 ⊥ y → y = 1.  Proof. intros H; apply H; auto with div_db. Qed.
-Fact coprime_diag x :  x ⊥ x → x = 1.  Proof. intros H; apply H; auto with div_db. Qed.
+Require Import arith_ext divides prime gcd_rect.
 
 (* L'ingrédient essentiel de l'algorithme d'Euclide pour les coefficients de Bezout. *)
 Lemma coprime_plus x y : x ⊥ y → y+x ⊥ y.
@@ -40,8 +28,7 @@ Proof.
   now apply div_plus_equiv.
 Qed.
 
-#[global] Hint Resolve coprime_0l coprime_0r coprime_diag coprime_sym 
-                       coprime_plus coprime_plus_rev : coprime_db.
+#[global] Hint Resolve  coprime_plus coprime_plus_rev : coprime_db.
 
 Section Bezout.
 
@@ -120,3 +107,14 @@ Proof.
     auto with div_db.
   rewrite <- E; auto with div_db.
 Qed.
+
+(* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
+   si p premier divise x.y alors p divise x ou p divise y. *)
+Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
+Proof.
+  intros Hp H.
+  destruct (prime__div_or_coprime p Hp x).
+  + now left.
+  + right; now apply (Gauss p x y).
+Qed.
+

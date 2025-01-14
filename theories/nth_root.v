@@ -9,152 +9,10 @@
 
 Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides bounded_choice gauss.
+Require Import arith_ext divides bounded_choice prime euclid.
 
-(** Notion de nombre entier premier *)
-
-#[global] Create HintDb prime_db.
-
-(* p est premier si p≠1 et n'a pas d'autre diviseur que 1 et p. *)
-Definition prime p := p≠1 ∧ ∀d, d∣p → d=1 ∨ d=p.
-
-(* Si p est premier et ne divise pas x, alors il est premier avec x. *)
-Lemma prime_no_div_coprime p : prime p → ∀x, ¬ p∣x → p ⊥ x.
-Proof.
-  (* intros H ? ? ? [ -> | -> ]%H; now trivial. *)
-  intros Hp x C d Hdp H.
-  apply Hp in Hdp.
-  destruct Hdp as [ -> | -> ].
-  + trivial.
-  + contradict C.
-    trivial.
-Qed.
-
-(* si p est premier, soit il divise x, soit il est premier avec x. *)
-Lemma prime__div_or_coprime p : prime p → ∀x, p∣x ∨ p ⊥ x.
-Proof.
-  intros ? x.
-  destruct (div_wdec p x).
-  + left.
-    trivial.
-  + right.
-    apply prime_no_div_coprime.
-    * trivial.
-    * trivial.
-Qed.
-
-(* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
-   si p premier divise x.y alors p divise x ou p divise y. *)
-Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
-Proof.
-  intros Hp H.
-  destruct (prime__div_or_coprime p Hp x).
-  + now left.
-  + right; now apply (Gauss p x y).
-Qed.
-
-Lemma Euclid_pow p q n : prime p → p∣q^n → p∣q.
-Proof.
-  intros Hp; induction n as [ | n IHn ]; simpl.
-  + intros ->%div_1r; auto with div_db.
-  + intros []%Euclid; eauto.
-Qed.
-
-Section checking_primality.
-
-  Remark zero_not_prime : ¬ prime 0.
-  Proof.
-    intros [ H' H ].
-    specialize (H 2).
-    destruct H as [ H | H ].
-    + auto with div_db.
-    + easy.
-    + easy.
-  Qed.
-
-  Remark one_not_prime : ¬ prime 1.
-  Proof. now  intros [ [] ]. Qed.
-
-  (** Pour démontrer qu'un nombre n'est pas premier,
-     il suffit d'en donner une factorisation non triviale.
-     Ce n'est pas possible pour 0 ou 1 mais pour les autres
-     ça marche bien. *)
-
-  Remark product_not_prime a b : 1 < a -> 1 < b -> ¬ prime (a*b).
-  Proof.
-    intros Ha Hb [ ? H].
-    destruct (H a); try lia; auto with div_db.
-    symmetry in H1; rewrite mult_comm in H1.
-    apply mult_ka_a_cancel in H1; lia.
-  Qed.
-
-  Remark four_not_prime : ¬ prime 4.
-  Proof. apply (product_not_prime 2 2); lia. Qed.
-
-  Remark forty_five_not_prime : ¬ prime 45.
-  Proof. apply (product_not_prime 5 9); lia. Qed.
-
-  (** Ci-dessous, pour montrer que p n'est pas premier
-      on montre que ni 0, ni 2, ni 3 ..., ni p-1 ne
-      divisent p, ce qui est inefficace si p est grand.
-
-      De toutes façons, démontrer qu'un nombre est premier
-      est un problème plus complexe mais toutefois important
-      en pratique. Même si il est dans la classe P(olynomiale),
-      on utilise plutôt des algorithmes approximatifs
-      qui sont assez efficaces pour tester la primalité
-      avec une faible proportion de faux-positifs. *)
-
-  Ltac destruct_n d n :=
-    match n with
-    | 0   => idtac
-    | S ?n => destruct d as [ | d ]; [ | destruct_n d n ]
-    end.
- 
-  Tactic Notation "analyse" constr(n) "times" "as" ident(d) := intro d; destruct_n d n.
-
-  Remark two_prime : prime 2.
-  Proof.
-    split.
-    + easy.
-    + analyse 1 times as d; intros H.
-      * now apply div_0l in H.
-      * apply div_le in H.
-        lia.
-  Qed.
-
-  Remark three_prime : prime 3.
-  Proof.
-    split.
-    + easy.
-    + analyse 3 times as d; intros H; auto.
-      * now apply div_0l in H.
-      * destruct H as (k & Hk); lia.
-      * apply div_le in H; lia.
-  Qed.
-
-  Remark five_prime : prime 5.
-  Proof.
-    split; try easy.
-    analyse 5 times as d; intros H; auto.
-    5: apply div_le in H; lia.
-    1-4: destruct H as (k & Hl); lia.
-  Qed.
-
-End checking_primality.
-
-(* Ni 0 ni 1 ne sont premiers donc *)
-Fact prime__ge_2 p : prime p → 2 ≤ p.
-Proof.
-  destruct p; intros [ H1 H2 ]; try lia.
-  destruct (H2 2); lia || auto with div_db.
-Qed.
-
-#[global] Hint Resolve zero_not_prime one_not_prime four_not_prime 
-                       two_prime three_prime five_prime
-                       prime__ge_2 : prime_db.
-
-(* A partir du lemme d'Euclide *)
+(* Le cas particulier d'Euclide pour p∣k² 
+   permet la preuve d'irrationalité de √2 *)
 Lemma two_divides_square k : 2∣k*k → 2∣k.
 Proof. intros []%Euclid; auto with prime_db. Qed.
 
@@ -191,53 +49,23 @@ Qed.
     alors on doit procéder autrement.
 
     Donc il faut généraliser le résultat et l'on va
-    démontrer : dⁿ∣kⁿ → d∣k (quand n>0). *)
+    démontrer : dⁿ∣kⁿ → d∣k (quand n>0).
 
-(** Mais d'abord, on a besoin d'isoler des facteurs 
-    premiers dans les nombres entiers. On montre qu'on
-    peut toujours trouver un facteur premier d'un nombre
-    (autre que 0 ou 1). 
+    Mais d'abord on présente une forme positive et
+    adaptée de la recherche d'un facteur premier dans
+    un entier. *)
 
-    A noter que la factorization des entiers est un problème
-    complexe et on ne connait pas d'algorithme "vraiment" plus
-    efficace que la recherche exhaustive effectuée ci-dessous.
-    Par "vraiment", on entend ici non-exponentiel.
-    La complexité théorique de la factorisation d'un entier
-    reste un problème ouvert (P ou NP ?), mais d'importance
-    pratique très grande dans la mesure où le chiffrement
-    assymétrique RSA est fondé sur la difficulté de la
-    factorisation de semi-premiers, càd des produits de
-    deux nombres premiers de grande taille, pex 250 chiffres
-    décimaux est le record actuel (Wikipedia). *)
-
-(* On peut trouver un facteur premier de tout nombre d>1.
-   En effet, par "recherche exhaustive" dans ]1,d] sur la
-   condition λ i, i∣d. Comme n lui-même satisfait cette
-   condition, il existe un plus petit diviseur de n dans
-   ]1,n], qui est alors un facteur premier de n. *) 
-Lemma prime_factor d : 1 < d → ∃ p e, prime p ∧ d = p*e ∧ e < d.
+(* Conséquence direct du lemme d'Euclide sur les diviseurs premiers de kⁿ *)
+Proposition Euclid_pow p k n : prime p → p∣k^n → p∣k.
 Proof.
-  intros Hd.
-  destruct find_first with (P := λ i, 1 < i ∧ i∣d) (n := d) 
-    as (p & H1 & (H2 & e & He) & H4).
-  + intros i ?; destruct (div_wdec i d); destruct (lt_dec 1 i); tauto.
-  + auto with div_db.
-  + exists p, e; split; split; try lia.
-    * intros f Hf.
-      destruct div_le with (1 := Hf); try lia.
-      revert Hf H.
-      zero one or more f as Hf';
-        intros Hf [H|H]%le_lt_eq_dec; auto.
-      - apply div_0l in Hf; lia.
-      - destruct (H4 _ H ); split; subst; auto with div_db.
-    * rewrite <- He.
-      replace e with (e*1) at 1 by ring.
-      apply Nat.mul_lt_mono_pos_l; lia.
+  intros Hp; induction n as [ | n IHn ]; simpl.
+  + intros ->%div_1r; auto with div_db.
+  + intros []%Euclid; eauto.
 Qed.
 
-(* On utilise aussi la forme positive ci-dessous, sans contrainte
+(* On utilise aussi la forme positive de prime_factor ci-dessous, sans contrainte
    a priori sur d, et le complément e de p dans d divise strictement d. *)
-Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
+Proposition prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 Proof.
   zero one or more d as Hd; auto; do 2 right.
   destruct prime_factor with (1 := Hd) as (p & e & H1 & H2 & H3).
@@ -292,7 +120,7 @@ Proof.
     (* comme pⁿeⁿ∣pⁿrⁿ, on déduit eⁿ∣rⁿ *)
     apply div_cancel in Hk
       as [ Hk | []%Nat.pow_eq_0_iff ];
-      [ | apply prime__ge_2 in H1; lia ].
+      [ | apply prime_ge_2 in H1; lia ].
     (* par hypothèse d'induction, de eⁿ∣rⁿ 
        on déduit e|r *)
     generalize (IHd _ H3 _ Hk).
@@ -385,52 +213,3 @@ Proof. solve irrational with 3. Qed.
 (* ⁵√x irrationel pour x ∈ ]32,243[ *)
 Goal ∀x, 32 < x < 243 → nth_root_irrational 5 x.
 Proof. solve irrational with 2. Qed.
-
-(** Petite parenthèse : les nombres premiers sont en quantité
-    non-bornée, c-à-d infinie. Pour démontrer celà, on peut
-    par exemple utiliser la fonction factorielle, 
-    fact m = 1*...*m *)
-
-Goal fact 0 = 1.
-Proof. simpl. trivial. Qed.
-
-Fact fact_S m : fact (S m) = (S m)*fact m.
-Proof. simpl. trivial. Qed.
-
-(* Tous les nombres 1..m divisent fact m *)
-Fact fact_div m d : 0 < d → d ≤ m → d∣fact m.
-Proof.
-  intros H; induction 1.
-  + destruct d; [ lia | ].
-    rewrite fact_S; auto with div_db.
-  + rewrite fact_S; auto with div_db.
-Qed.
-
-(* Les nombres premiers sont en quantité non-bornée,
-   c-à-d il n'y a pas de majorant pour les nombres
-   premiers.
-
-   En effet, dans les facteurs premiers de 1+fact m,
-   il y a forcément un premier plus grand que m. *)
-Theorem prime_unbounded m : ∃p, prime p ∧ m < p.
-Proof.
-  (* On choisit un facteur premier p de 1+fact m*)
-  destruct (prime_factor (1+fact m))
-    as (p & e & H1 & H2 & _);
-    [ generalize (fact_neq_0 m); lia | ].
-  (* alors p est forcément plus grand que m *)
-  exists p; split; auto.
-  destruct (le_lt_dec p m) as [ H3 | ]; auto.
-  (* En effet, si p ≤ m, alors on a p divise fact m *)
-  apply fact_div in H3;
-    [ | apply prime__ge_2 in H1; lia ].
-  (* mais p divise fact m+1 *) 
-  assert (p∣fact m+1) as C
-    by (exists e; lia).
-  (* donc p divise 1, absurde *)
-  apply div_plus_equiv, div_1r in C; auto.
-  apply prime__ge_2 in H1; lia.
-Qed.
-
-(** Fin de la parentèse sur le quantité infinie de 
-    nombres premiers. *)
