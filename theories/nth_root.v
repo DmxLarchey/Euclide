@@ -212,7 +212,9 @@ Proof.
   + exists p, q; split; split; try lia.
     * intros e He.
       destruct div_le with (1 := He); try lia.
-      revert He H; case 01n e as He'; intros He [H|H]%le_lt_eq_dec; auto.
+      revert He H.
+      zero one or more e as He';
+        intros He [H|H]%le_lt_eq_dec; auto.
       - apply div_0l in He; lia.
       - destruct (H4 _ H ); split; subst; auto with div_db.
     * rewrite <- Hq.
@@ -224,7 +226,7 @@ Qed.
    a priori sur d, et le complément q dans p dans d divise strictement d. *)
 Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 Proof.
-  case 01n d as Hd; auto; do 2 right.
+  zero one or more d as Hd; auto; do 2 right.
   destruct prime_factor with (1 := Hd) as (p & e & H1 & H2 & H3).
   exists p, e; repeat (split; auto).
   + exists p; auto.
@@ -252,7 +254,7 @@ Theorem div_pow_simplify n d k : d^n∣k^n → d∣k ∨ n=0.
 Proof.
   intros Hk.
   (* On élimine le cas n=0 *)
-  case 0n n as Hn; [ auto | left ].
+  zero or more n as Hn; [ auto | left ].
   (* Reste le cas 0<n, et on procède par induction sur d
      en utilisant _⇂_ comme relation bien fondée,
      après avoir généralisés k et Hd (qui dépend de k) *)
@@ -327,7 +329,7 @@ Qed.
 Lemma not_pow_by_witness n k : (∃i, i^n < k < (1+i)^n) → ¬ ∃r, k = r^n.
 Proof.
   intros (i & H1 & H2); revert H1 H2.
-  case 0n i as Hi.
+  zero or more i as Hi.
   + destruct n; simpl; try lia.
     rewrite Nat.pow_1_l; lia.
   + intros H1 H2 (x & H3).

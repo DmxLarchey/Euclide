@@ -158,16 +158,16 @@ Qed.
    l'alternative d=0 ou d>0. *)
 Lemma div_wdec i d : i∣d ∨ ¬i∣d.
 Proof.
-  case 0n i as Hi.
+  zero or more i as Hi.
   + (* i=0, on distingue d=0 et d>0 *)
-    case 0n d as Hd.
+    zero or more d as Hd.
     * left; auto with div_db.
     * right; intros ->%div_0l; lia.
   + (* i>0, on peut réaliser la division euclienne de d par i *)
     destruct (eucl_dev i Hi d) as [ q r H1 H2 ].
     (* d = q.i + r et r < i *)
     (* on distingue r = 0 et r > 0 *)
-    revert H1 H2; case 0n r as Hr; intros H1 ->.
+    revert H1 H2; zero or more r as Hr; intros H1 ->.
     * (* r = 0 *)
       left; auto with div_db.
     * (* 0 < r < i *)

@@ -13,29 +13,16 @@ From Coq Require Import Arith Lia Utf8.
 
 #[local] Notation lt_0_Sn := Nat.lt_0_succ.
 
-Definition zero_or_pos (P : nat → Type) n :
-    (n = 0 → P 0)
-  → (0 < n → P n)
-  → P n :=
-  match n with
-  | 0   => λ h0 _, h0 eq_refl
-  | S _ => λ _ hS, hS (lt_0_Sn _)
-  end.
-
-Tactic Notation "zero" "or" "posx" hyp(n) "as" ident(H) :=
-  pattern n; apply zero_or_pos; intros H.
-
 Fact nat_case_0_gt (P : nat → Type) n : P 0 → (0 < n → P n) → P n.
 Proof. destruct n; intros H1 H2; auto; apply H2; lia. Qed.
 
-Fact nat_case_0_1_gt (P : nat → Type) n :
-  P 0 → P 1 → (1 < n → P n) → P n.
-Proof. destruct n as [ | [ | n ] ]; intros H1 H2 H3; auto; apply H3; lia. Qed.
+Fact nat_case_0_1_gt (P : nat → Type) n : P 0 → P 1 → (1 < n → P n) → P n.
+Proof. destruct n as [ | [ | ] ]; intros ? ? H; auto; apply H; lia. Qed.
 
-Tactic Notation "case" "0n" hyp(i) "as" ident(H) :=
+Tactic Notation "zero" "or" "more" hyp(i) "as" ident(H) :=
   pattern i; apply nat_case_0_gt; [ | intros H ].
 
-Tactic Notation "case" "01n" hyp(n) "as" ident(H) :=
+Tactic Notation "zero" "one" "or" "more" hyp(n) "as" ident(H) :=
   pattern n; apply nat_case_0_1_gt; [ | | intros H ].
 
 Fact plus_comm n m : n+m = m+n.

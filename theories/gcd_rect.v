@@ -11,22 +11,22 @@ Require Import Arith Lia Wellfounded Extraction Utf8.
 
 Require Import measure.
 
-(** Une analyse par cas sur n, spécialisée, avec un contrôle
-    fin du code extrait. *)
+(** Une analyse par cas sur n, spécialisée, 
+    avec un contrôle fin du code extrait. *)
 
 Definition zero_or_succ (P : nat → Type) n :
     (n = 0 → P 0)
   → (∀ p, n = S p → P n)
   → P n :=
-  match n return (n = _ → _)  → (∀p, n = S _ → _) → P n with
+  match n return (n = _ → _) → (∀p, n = _ → P n) → P n with
   | 0   => λ h0 _, h0 eq_refl
   | S _ => λ _ hS, hS _ eq_refl 
   end.
 
+Extraction Inline zero_or_succ.
+
 Tactic Notation "zero" "or" "succ" hyp(n) "as" ident(x) ident(H) :=
   pattern n; apply zero_or_succ; [ intros H | intros x H ].
-
-Extraction Inline zero_or_succ.
 
 #[local] Reserved Notation "x ≺ₑ y" (at level 70, format "x  ≺ₑ  y").
 
