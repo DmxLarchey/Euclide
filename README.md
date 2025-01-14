@@ -66,7 +66,7 @@ plutôt dans cet ordre. Il y a aussi quelques fichiers d'outils ou de remarques 
 - [`bounded_choice.v`](theories/bounded_choice.v): principe de choix fini;
 - [`measure.v`](theories/measure.v): induction sur une mesure;
 - [`gcd_rect.v`](theories/gcd_rct.v): principe de récurrence pour l'algorithme d'Euclide (PGCD);
-- [`primes_unbounded.v](theories/primes_unbounded.v): infinité des nombres premiers.
+- [`primes_unbounded.v`](theories/primes_unbounded.v): infinité des nombres premiers.
 
 Pour les utilisateurs moins à l'aise avec Coq, nous fournissons un plan
 textuel de ces preuves mécanisées, avec les (hyper-)liens pour les étapes
@@ -135,7 +135,7 @@ n'a que deux diviseurs, 1 et p lui-même.
 Nous démontrons dans un premier temps l'irrationalité de √2 en utilisant 
 le [lemme d'Euclide](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide) 
 qui affirme que si un nombre premier p divise x⋅y alors il divise x ou il divise y. Ce
-qui s'exprime comme suit [en Coq](theories/nth_root.v#L35):
+qui s'exprime comme suit [en Coq](theories/nth_root.v#L16):
 
 ```coq
 Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
@@ -144,7 +144,7 @@ Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
 Voir plus loin pour quelques détails sur la preuve
 du lemme d'Euclide. Pour l'étude de √2 spécifiquement, 
 on n'utilise que le cas particulier suivant (où p=2),
-[en Coq](theories/nth_root.v#L145)
+[en Coq](theories/nth_root.v#L38)
 
 ```coq
 Lemma two_divides_square k : 2∣k*k → 2∣k.
@@ -161,7 +161,7 @@ b. Donc 2 divise à la fois a et b. Ils ne sont donc pas
 premiers entre eux, ce qui contredit l'hypothèse de départ
 et conduit à une absurdité. _Fin de la démonstration._
 
-[En Coq](theories/nth_root.v#L154) cela donne le théorème suivant:
+[En Coq](theories/nth_root.v#L47) cela donne le théorème suivant:
 
 ```coq
 Theorem root_2_not_rational a b : a ⊥ b → 2*b*b = a*a → False.
@@ -171,8 +171,9 @@ A noter que l'hypothèse a ⊥ b n'est pas strictement nécessaire
 bien qu'elle soit essentielle au raisonnement ci-dessus. Pour
 s'en défaire, il faut rajouter une induction, sous une forme
 ou une autre, soit en montrant que toute fraction a/b à une 
-représentation où a est premier avec b (calcul du PGCD pex), ou encore,
-en raisonnant par induction bien fondée sur a avec pex l'ordre
+représentation où a est premier avec b (calcul du PGCD pex,
+ou alors d'une plus petite représentation, voir [`gauss.v`](theories/gauss.v#L105)), 
+ou encore, en raisonnant par induction bien fondée sur a avec l'ordre
 de divisibilité stricte (voir ci-dessous).
 
 ## Identité de Bezout et lemme de Gauss
@@ -180,14 +181,19 @@ de divisibilité stricte (voir ci-dessous).
 La preuve du lemme d'Euclide peut se déduire de sa généralisation,
 le [lemme de Gauss](https://fr.wikipedia.org/wiki/Lemme_d%27Euclide): 
 si d et x sont premiers entre eux, et d divise x⋅y 
-alors d divise y. [En Coq](theories/gauss.v#L108):
-
+alors d divise y. En Coq:
 ```coq
 Lemma Gauss d x y : d ⊥ x → d∣x*y → d∣y.
 ```
 
-Le lemme de Gauss est lui-même conséquence de l'identité de Bezout
-que l'on peut exprimer ainsi [en Coq](theories/gauss.v#L94):
+Ce lemme est démontré de deux manières assez différentes:
+- dans [`gauss.v`](theories/gauss.v#L211), une preuve du lemme
+  de Gauss qui suit l'[argumentaire utilisé par Euclide VII](https://www.imo.universite-paris-saclay.fr/~daniel.perrin/CAPES/arithmetique/lemmeEuclide.pdf);
+- dans [`bezout.v`](theories/bezout.v#L89), une preuve du lemme
+  de Gauss plus moderne, via l'identité de Bezout.
+
+En effet, le lemme de Gauss peut être vu comme une conséquence 
+de l'identité de Bezout que l'on peut exprimer ainsi [en Coq](theories/bezout.v#L75):
 ```coq
 Theorem Bezout : a ⊥ b ↔ ∃ u v u' v', u*a + v*b = 1 + u'*a + v'*b.
 ```
@@ -219,7 +225,7 @@ racine n-ième de k, càd ⁿ√k, est un nombre rationnel. A noter bien sûr qu
 a/b est une représentation rationnelle correcte seulement si b n'est pas nul.
 
 On en déduit la définition suivante pour la rationalité de ⁿ√k, ainsi 
-que pour son contraire l'irrationalité de ⁿ√k, [en Coq](theories/nth_root.v#L295):
+que pour son contraire l'irrationalité de ⁿ√k, [en Coq](theories/nth_root.v#L152):
 ```coq
 Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n.
 Definition nth_root_irrational n k := ¬ nth_root_rational n k.
@@ -231,8 +237,7 @@ la notion de représentation rationnelle via une fraction a/b composée de deux 
 
 Nous démontrons le résultat suivant qui dit que ⁿ√k (k entier) 
 admet une représentation rationnelle seulement si k est de 
-la forme rⁿ (r entier). Cela donne [en Coq](theories/nth_root.v#L301)
-
+la forme rⁿ (r entier). Cela donne [en Coq](theories/nth_root.v#L158):
 ```coq
 Theorem nth_root_rational__is_pow n k : nth_root_rational n k → ∃r, k = r^n.
 ```
@@ -248,14 +253,14 @@ d'établir qu'un entier k n'est pas de la forme rⁿ avec r entier.
 Pour y parvenir, il suffit de procéder à un encadrement tel que k ∈ ]iⁿ,(1+i)ⁿ[ 
 car il n'y a pas de d'entier de la forme rⁿ dans cet intervalle. En effet
 la fonction i ↦ iⁿ est strictement croissante (quand n>0). 
-[En Coq](theories/nth_root.v#L337) on obtient:
+[En Coq](theories/nth_root.v#L195) on obtient:
 ```coq
 Theorem irrationality_criteria n k : (∃i, i^n < k < (1+i)^n) → nth_root_irrational n k.
 ```
 
 Par des encadrements pertinents, nous obtenons maintenant facilement
 des preuves que (par exemple) ³√7 ou encore ⁵√x (avec x ∈ ]32,243[) sont irrationnels. 
-[En Coq](theories/nth_root.v#L350), on obtient:
+[En Coq](theories/nth_root.v#L212), on obtient:
  ```coq
 Goal nth_root_irrational 3 7.
 Goal ∀x, 32 < x < 243 → nth_root_irrational 5 x.
@@ -285,7 +290,7 @@ un travail sensiblement plus long en Coq de démontrer l'existence et l'unicité
 (à permutation près) d'une telle décomposition et ensuite de pouvoir comparer
 de ces décompositions en cas de divisibilité. Ce n'est pas infaisable, mais
 nous proposons un argument plus direct pour le résultat de simplification 
-[en Coq](theories/nth_root.v#L251):
+[en Coq](theories/nth_root.v#L108):
 ```coq
 Theorem div_pow_simplify n d k : d^n∣k^n → d∣k ∨ n=0.
 ```
@@ -332,9 +337,9 @@ et essentiels dans les systèmes de preuves constructifs fondés sur la
 théorie inductive des types, tels que celui de Coq.
 
 La démonstration de `div_pow_simplify` utilise également l'existence d'un facteur 
-premier dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L225):
+premier dans tout nombre entier d>1. [En Coq](theories/nth_root.v#L82):
 ```coq
-Corollary prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
+Proposition prime_factor' d : d = 0 ∨ d = 1 ∨ ∃ p e, prime p ∧ d = p*e ∧ e⇂d.
 ```
 
 Comme suggéré ci-dessus, on le trouve par recherche exhaustive (finie) de plus 
