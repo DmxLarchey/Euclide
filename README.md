@@ -93,7 +93,7 @@ Theorem nat_ind (P : nat → Prop) : P O → (∀n, P n → P (S n)) → ∀n, P
 ```
 
 généralement appelé _raisonnement par récurrence_. Nous verrons 
-également d'autres principes d'inductions sur le type `nat` plus
+également d'autres principes d'induction sur le type `nat` plus
 adaptés aux propriétés de la notion de divisibilité.
 
 Les opérations arithmétiques sont définies dans
