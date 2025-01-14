@@ -198,7 +198,7 @@ du type `nat` de Coq.
 
 Plus généralement, on utilise l'équation k⋅bⁿ = aⁿ pour exprimer que la
 racine n-ième de k, càd ⁿ√k, est un nombre rationnel. A noter bien sûr que
-a/b n'est un rationnel que si b n'est pas nul.
+a/b est une représentation rationnelle correcte seulement si b n'est pas nul.
 
 On en déduit la définition suivante pour la rationalité de ⁿ√k, ainsi 
 que pour son contraire l'irrationalité de ⁿ√k, [en Coq](theories/nth_root.v#L295):
