@@ -112,7 +112,9 @@ Proof.
   zero or more n as Hn; [ auto | left ]. (* On élimine le cas n=0 *)
   (* Reste le cas 0<n, et on procède par induction sur d en utilisant _⇂_  comme
      relation bien fondée, après avoir généralisés k et Hd (qui dépend de k) *)
-  revert k Hk. induction d as [ d IHd ] using sdiv_induction. intros k Hk.
+  revert k Hk.
+  induction d as [ d IHd ] using sdiv_induction.
+  intros k Hk.
   (* Soit p un factor premier de d *)
   destruct (prime_factor' d) as [ -> | [ -> | (p & e & H1 & H2 & H3) ] ].
   + (* cas d = 0 *)
