@@ -44,7 +44,7 @@ Proof. intros []%Euclid; auto with prime_db. Qed.
 
    A noter que l'on démontrer ici qu'il n'existe
    pas de fraction a/b "normalisée" (càd avec a ⊥ b)
-   dont le carré soit 2. *)
+   dont le carré a²/b² soit 2. *)
 Theorem root_2_not_rational a b : a ⊥ b → 2*b*b = a*a → False.
 Proof.
   intros Hab H.
@@ -109,12 +109,10 @@ Qed.
 Theorem div_pow_simplify n d k : d^n∣k^n → d∣k ∨ n=0.
 Proof.
   intros Hk.
-  (* On élimine le cas n=0 *)
-  zero or more n as Hn; [ auto | left ].
-  (* Reste le cas 0<n, et on procède par induction sur d
-     en utilisant _⇂_ comme relation bien fondée,
-     après avoir généralisés k et Hd (qui dépend de k) *)
-  induction d as [ d IHd ] in k, Hk |- * using sdiv_induction.
+  zero or more n as Hn; [ auto | left ]. (* On élimine le cas n=0 *)
+  (* Reste le cas 0<n, et on procède par induction sur d en utilisant _⇂_  comme
+     relation bien fondée, après avoir généralisés k et Hd (qui dépend de k) *)
+  revert k Hk. induction d as [ d IHd ] using sdiv_induction. intros k Hk.
   (* Soit p un factor premier de d *)
   destruct (prime_factor' d) as [ -> | [ -> | (p & e & H1 & H2 & H3) ] ].
   + (* cas d = 0 *)

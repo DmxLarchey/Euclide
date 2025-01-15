@@ -71,7 +71,7 @@ Qed.
     buts suivants automatiquement. *)
 
 Fact div_mult_l a b c : c∣b → c∣a*b.
-Proof. eauto with div_db. Qed.
+Proof. info_eauto with div_db. Qed.
 
 Fact div_mult_r a b c : c∣a → c∣a*b.
 Proof. eauto with div_db. Qed. 
