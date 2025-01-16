@@ -9,18 +9,18 @@
 
 From Coq Require Import Arith Lia Utf8.
 
-Require Import arith_ext divides bounded_choice prime gauss (* bezout *).
+Require Import arith_ext divides prime gauss (* bezout *).
 
 (* Le lemme d'Euclide s'obtient à partir du lemme de Gauss :
    si p premier divise x.y alors p divise x ou p divise y. *)
-Lemma Euclid p x y : prime p → p∣x*y → p∣x ∨ p∣y.
+Lemma Euclid : ∀ p x y, prime p → p∣x*y → p∣x ∨ p∣y.
 Proof.
-  intros Hp H.
-  destruct (prime__div_or_coprime _ Hp x).
+  intros p x y Hp D.
+  destruct (prime__div_or_coprime _ Hp x) as [ Hpx | Hpx ].
   + left.
     trivial.
   + right.
-    Check Gauss.
+    Check (Gauss p x y).
     apply (Gauss p x y).
     * trivial.
     * trivial.
@@ -138,7 +138,7 @@ Proof.
        on déduit e|r *)
     generalize (IHd _ H3 _ Hk).
     (* et donc d=p.e divise k=p.r *)
-    subst d k; auto with div_db.
+    subst d k. auto with div_db.
 Qed.
 
 (** Par définition, ⁿ√k est rationel, c-à-d k a une
@@ -148,8 +148,8 @@ Qed.
     représentation de cette équation qui évite la
     notion de nombre rationel. *)
 
-Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n.
-Definition nth_root_irrational n k := ¬ nth_root_rational n k.
+Definition nth_root_rational n k := ∃ a b, b ≠ 0 ∧ k*b^n = a^n. (* ⁿ√k rationelle *)
+Definition nth_root_irrational n k := ¬ nth_root_rational n k.  (* ⁿ√k irrationelle *)
 
 (* Si k = (a/b)ⁿ (avec b≠0) alors k = rⁿ où r est entier
    Attention, dans le cas où n=0 alors x⁰ = 1 dans les
