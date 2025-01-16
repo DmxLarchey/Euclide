@@ -18,6 +18,17 @@ déjà de la forme rⁿ, un entier r élevé à la puissance n. Autrement dit,
 nous démontrons que les seules racines n-ièmes rationnelles sont celles 
 d'entiers élevés à la puissance n.
 
+Ce projet accompagne une présentation de l'assistant de preuves Coq
+aux étudiants en 
+classes préparatoires du [Lycée Henri Poincaré](https://lycee-poincare.fr/les-classes-preparatoires-cpge/)
+donnée le 16 janvier 2025 au [LORIA](https://www.loria.fr):
+
+<div align="center">
+<a href="http://www.loria.fr/~larchey/papers/euclid_2025.pdf"><i>Euclide et l'irrationalité de √2 dans l'assistant de preuve Coq</i></a>
+
+by [Dominique Larchey-Wendling](http://www.loria.fr/~larchey)
+</div>
+
 ## Structure du projet
 
 Il est composé de deux parties:
